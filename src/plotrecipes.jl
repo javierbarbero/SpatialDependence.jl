@@ -1,5 +1,6 @@
-# Recipes for Moran plot
+# Plot recipes
 
+# Recipe for Moran plot
 @recipe function f(x::Vector{Float64}, W::SpatialWeights, zstandardize::Bool = false)
 
     Wx = slag(W, x)
@@ -41,6 +42,29 @@
         linestyle := :dash
         seriescolor --> :red
         [Wzmean]
+    end
+
+end
+
+# Recipe for Moran's I distribution
+@recipe function plot(x::GlobalMoran)
+
+    I = x.I
+    Iperms = x.Iperms
+
+    legend --> false
+
+    # Histogram of permutated values
+    @series begin
+        seriestype := :histogram
+        Iperms
+    end
+
+    # Vertical line at Moran's i
+    @series begin
+        seriestype := :vline
+        seriescolor --> :red
+        [I]
     end
 
 end

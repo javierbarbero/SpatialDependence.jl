@@ -61,28 +61,6 @@ zscore(x::GlobalMoran) = x.z;
 
 pvalue(x::GlobalMoran) = x.p;
 
-@recipe function plot(x::GlobalMoran)
-
-    I = x.I
-    Iperms = x.Iperms
-
-    legend --> false
-
-    # Histogram of permutated values
-    @series begin
-        seriestype := :histogram
-        Iperms
-    end
-
-    # Vertical line at Moran's i
-    @series begin
-        seriestype := :vline
-        seriescolor --> :red
-        [I]
-    end
-
-end
-
 function Base.show(io::IO, x::GlobalMoran)
 
     println(io, "Global Moran test of Spatial Autocorrelation")

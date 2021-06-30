@@ -56,6 +56,7 @@ module SpatialDependence
     include("slag.jl")
 
     include("scor/moran.jl")
-    include("scor/moranplot.jl")
+
+    include("plotrecipes.jl")
 
 end

@@ -23,4 +23,6 @@
     @test std(mguerry) ≈ 0.070790 atol = 1e-5
     @test zscore(mguerry) ≈ 10.315064 atol = 1e-5
 
+    @test_nowarn show(IOBuffer(), mguerry)
+
 end

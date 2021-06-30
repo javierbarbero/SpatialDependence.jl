@@ -34,6 +34,7 @@
 
         @test wtransformation(W) == :binary
 
+        # Binary weights
         wtransform!(W, :binary)
 
         @test weights(W, 1) == [1, 1]
@@ -46,6 +47,22 @@
         @test weights(W, 8) == [1, 1, 1]
         @test weights(W, 9) == [1, 1]
 
+        # Row standardization
+        Wrow = wtransform(W, :row)
+
+        @test wtransformation(Wrow) == :row
+
+        @test weights(Wrow, 1) == [0.5, 0.5]
+        @test weights(Wrow, 2) == [1/3, 1/3, 1/3]
+        @test weights(Wrow, 3) == [0.5, 0.5]
+        @test weights(Wrow, 4) == [1/3, 1/3, 1/3]
+        @test weights(Wrow, 5) == [1/4, 1/4, 1/4, 1/4]
+        @test weights(Wrow, 6) == [1/3, 1/3, 1/3]
+        @test weights(Wrow, 7) == [0.5, 0.5]
+        @test weights(Wrow, 8) == [1/3, 1/3, 1/3]
+        @test weights(Wrow, 9) == [0.5, 0.5]
+
+        # In-place row standardization
         wtransform!(W, :row)
 
         @test wtransformation(W) == :row
