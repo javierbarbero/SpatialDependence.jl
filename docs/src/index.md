@@ -25,14 +25,13 @@ julia> moran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
 Global Moran test of Spatial Autocorrelation
 --------------------------------------------
 
-Moran's I: 0.6855399
+Moran's I: 0.7176053
 Expectation:-0.0119048
 
 Randomization test with 9999 permutations.
-Standard Error: 0.0672654
-zscore: 10.376848
+Standard Error: 0.0707896
+zscore: 10.3150637
 p-value: 0.0001
-
 ```
 
 ## Documentation index

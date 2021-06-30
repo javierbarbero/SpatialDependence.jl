@@ -1,4 +1,4 @@
-# SpatialDependence
+# SpatialDependence.jl
 
 A Julia package for spatial dependence (spatial autocorrelation), spatial weights matrices, and exploratory spatial data analysis (ESDA).
 
