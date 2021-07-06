@@ -37,10 +37,6 @@ moran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
 plot(guerry.Litercy, W, true, xlabel = "Litercy")
 ```
 
-```@example intro
-savefig("moranscatterplot.png") # hide
-```
-
 ## Documentation index
 
 ```@contents
