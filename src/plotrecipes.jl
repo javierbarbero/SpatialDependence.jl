@@ -15,7 +15,7 @@
 
     title --> "Moran Scatterplot"
     xguide --> "Attribute"
-    yguide --> "Spatial Lag"
+    yguide --> "Spatial Lag of " * plotattributes[:xguide]
     legend --> false
     grid --> false
 
