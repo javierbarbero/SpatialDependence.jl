@@ -1,7 +1,8 @@
-using SpatialDependence
-using SpatialDatasets
-using StableRNGs
 using Documenter
+using Plots
+using SpatialDatasets
+using SpatialDependence
+using StableRNGs
 
 DocMeta.setdocmeta!(SpatialDependence, :DocTestSetup, :(using SpatialDependence); recursive=true)
 

@@ -10,28 +10,35 @@ The package [SpatialDependence.jl](https://github.com/javierbarbero/SpatialDepen
 
 The following example reads Guerry's Moral statistics of France data and builds a spatial contiguity matrix from the polygons. The spatial weights matrix is row standardized, and the Morans' I index is calculated:
 
-```julia 1
-julia> using SpatialDependence
-julia> using SpatialDatasets
-julia> using StableRNGs
+```@example intro
+# Load packages
+using Plots
+using SpatialDependence
+using SpatialDatasets
+using StableRNGs
 
-julia> guerry = sdataset("Guerry");
+# Guerry's Moral statistics of France data from the SpatialDatasets.jl package
+guerry = sdataset("Guerry");
 
-julia> W = polyneigh(guerry.geometry);
+# Build polygon contiguity matrix
+W = polyneigh(guerry.geometry);
+```
 
-julia> wtransform!(W, :row);
+```@example intro
+# Row-standardize the spatial weights matrix
+wtransform!(W, :row);
 
-julia> moran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
-Global Moran test of Spatial Autocorrelation
---------------------------------------------
+# Global Moran test of Spatial Autocorrelation of the Litercy variable
+moran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
+```
 
-Moran's I: 0.7176053
-Expectation:-0.0119048
+```@example intro
+# Moran Scatterplot of the Litercy variable
+plot(guerry.Litercy, W, true, xlabel = "Litercy")
+```
 
-Randomization test with 9999 permutations.
-Standard Error: 0.0707896
-zscore: 10.3150637
-p-value: 0.0001
+```@example intro
+savefig("moranscatterplot.png") # hide
 ```
 
 ## Documentation index
