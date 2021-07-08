@@ -49,12 +49,15 @@ end
 function hits(icoords::Vector{Vector{Float64}}, jcoords::Vector{Vector{Float64}}, critthr::Int64, tol::Float64)::Bool
     nhits = 0
 
-    for pti in 1:length(icoords[1])
-        for ptj in 1:length(jcoords[1])
-            xd = icoords[1][pti] - jcoords[1][ptj]
+    nicoords = length(icoords[1])
+    njcoords = length(jcoords[1])
+
+    for pti in 1:nicoords
+        for ptj in 1:njcoords
+            @inbounds xd = icoords[1][pti] - jcoords[1][ptj]
             if abs(xd) > tol continue end
             
-            yd = icoords[2][pti] - jcoords[2][ptj]
+            @inbounds yd = icoords[2][pti] - jcoords[2][ptj]
             if abs(yd) > tol continue end
             
             dist = hypot(xd, yd)
