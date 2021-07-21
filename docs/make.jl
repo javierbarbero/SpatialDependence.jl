@@ -4,6 +4,9 @@ using SpatialDatasets
 using SpatialDependence
 using StableRNGs
 
+# Workaround for GR errors when plotting
+ENV["GKSwstype"] = "100"
+
 DocMeta.setdocmeta!(SpatialDependence, :DocTestSetup, :(using SpatialDependence); recursive=true)
 
 makedocs(;
