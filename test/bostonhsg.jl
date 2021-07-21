@@ -76,7 +76,7 @@
     #  Plot Recipes
     # ----------------
 
-    # Test Plot Recipes
+    # Test Moran's I distribution
     @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), mboston)
 
     # Test Moran's Plot

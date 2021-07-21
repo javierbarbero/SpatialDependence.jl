@@ -6,14 +6,17 @@ module SpatialDependence
     [SpatialDependence repository](https://github.com/javierbarbero/SpatialDependence.jl).
     """    
 
-    using GeoInterface: Point, coordinates
+    using GeoInterface: AbstractGeometry, AbstractPoint, AbstractPolygon, AbstractMultiPolygon, coordinates, geotype, Point, shapecoords
     using NearestNeighbors: KDTree, knn, inrange
+    using PlotUtils: palette
     using Random: shuffle, AbstractRNG, default_rng
     using RecipesBase
+    using Tables: istable
 
+    import Base: length
     import SparseArrays: SparseMatrixCSC, sparse
-    import StatsBase: weights, nobs, minimum, maximum, median, score, zscore, standardize, ZScoreTransform
-    import Statistics: mean, median, std
+    import StatsBase: counts, levels, maximum, median, minimum, nobs, percentile, score, standardize, weights, zscore, ZScoreTransform
+    import Statistics: mean, median, std, quantile
     
     export 
         # Types
@@ -46,7 +49,37 @@ module SpatialDependence
         std,
         score,
         zscore,
-        pvalue
+        pvalue,
+
+        # Choropleth Maps and Classification<
+        AbstractMapClassificator,
+        AbstractGraduatedMapClassificator,
+        EqualIntervals,
+        Quantiles,
+        CustomBreaks,
+        GraduatedMapClassification,
+
+        AbstractStatisticalMapClassificator,
+        NaturalBreaks,
+        BoxPlot,
+        StdMean,
+        Percentiles,
+
+        AbstractUniqueMapClassificator,
+        Unique,
+        UniqueMapClassification,
+
+        AbstractCoLocationMapClassificator,
+        CoLocation,
+        CoLocationMapClassification,
+
+        mapclassify,
+        maplabels,
+
+        assignments,
+        counts,
+        bounds,
+        levels
 
     include("sweights/sweights.jl")
     include("sweights/dnearneigh.jl")
@@ -57,6 +90,13 @@ module SpatialDependence
 
     include("scor/moran.jl")
 
+    include("maps/classification.jl")
+    include("maps/graduated.jl")
+    include("maps/statistical.jl")
+    include("maps/unique.jl")
+    include("maps/colocation.jl")
+
     include("plotrecipes.jl")
+    include("plotchoropleth.jl")
 
 end

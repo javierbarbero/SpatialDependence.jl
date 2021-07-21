@@ -20,7 +20,9 @@ makedocs(;
         "Home" => "index.md",
         "Spatial Weight Matrices" => "sweightmatrices.md",
         "Spatial Lag" => "spatiallag.md",
+        "Choropleth Maps" => "choropleth.md",
         "Global Spatial Autocorrelation" => "gspatialautocorrelation.md",
+        "API" => "api.md"
     ],
 )
 
