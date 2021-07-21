@@ -82,24 +82,6 @@ Build a spatial weights object from a vector of polygons `P`.
 # Optional Arguments
 - `criterion=:Queen`: neighbour criterion. `:Queen` or `:Rook`.
 - `tol=0.0`: tolerance for polygon contiguity.
-
-# Examples
-```jldoctest
-julia> using SpatialDatasets
-
-julia> guerry = sdataset("Guerry");
-
-julia> W = polyneigh(guerry.geometry)
-Spatial Weights object 
-Observations: 85 
-Transformation: binary
-Average number of neighbors: 4.9412
-Minimum nunmber of neighbors: 2
-Maximum nunmber of neighbors: 8
-Median number of neighbors: 5.0
-Islands (isloated): 0
-Density: 5.8131% 
-```
 """
 function polyneigh(P::Vector; criterion::Symbol = :Queen, tol::Float64 = 0.0)::SpatialWeights
 

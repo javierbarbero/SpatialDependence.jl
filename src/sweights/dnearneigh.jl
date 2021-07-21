@@ -3,24 +3,6 @@
 """
     dnearneigh(X, Y; threshold)
 Build a spatial weights object from a set of coordinates using a distance `threshold`.
-
-# Examples
-```jldoctest
-julia> using SpatialDatasets
-
-julia> bostonhsg = sdataset("Bostonhsg");
-
-julia> W = dnearneigh(bostonhsg.x, bostonhsg.y, threshold = 4)
-Spatial Weights object 
-Observations: 506 
-Transformation: binary
-Average number of neighbors: 72.2253
-Minimum nunmber of neighbors: 1
-Maximum nunmber of neighbors: 178
-Median number of neighbors: 56.0
-Islands (isloated): 0
-Density: 14.2738% 
-```
 """
 function dnearneigh(X::Vector{Float64}, Y::Vector{Float64}; threshold)::SpatialWeights
 
@@ -53,24 +35,6 @@ end
 """
     dnearneigh(P; threshold)
 Build a spatial weights object from a vector of points using a distance `threshold`.
-
-# Examples
-```jldoctest
-julia> using SpatialDatasets
-
-julia> bostonhsg = sdataset("Bostonhsg");
-
-julia> W = dnearneigh(bostonhsg.geometry, threshold = 4)
-Spatial Weights object 
-Observations: 506 
-Transformation: binary
-Average number of neighbors: 72.2253
-Minimum nunmber of neighbors: 1
-Maximum nunmber of neighbors: 178
-Median number of neighbors: 56.0
-Islands (isloated): 0
-Density: 14.2738% 
-```
 """
 function dnearneigh(P::Vector; threshold)::SpatialWeights
 

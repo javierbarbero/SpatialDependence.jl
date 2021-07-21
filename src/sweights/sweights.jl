@@ -30,32 +30,12 @@ end
 """
     neighbors(W::SpatialWeights, i::Int)
 Return a vector with the neighbors of `i`.
-# Examples
-```jldoctest
-julia> W = SpatialWeights([0 1 0; 1 0 1; 0 1 0]);
-
-julia> neighbors(W, 2)
-2-element Vector{Int64}:
- 1
- 3
-```
 """
 neighbors(W::SpatialWeights, i::Int)::Vector{Int64} = W.neighs[i];
 
 """
     weights(W::SpatialWeights, i::Int)
 Return a vector with the weights of the neighbors of `i`.
-# Examples
-```jldoctest
-julia> W = SpatialWeights([0 1 0; 1 0 1; 0 1 0]);
-
-julia> wtransform!(W, :row)
-
-julia> weights(W, 2)
-2-element Vector{Float64}:
- 0.5
- 0.5
-```
 """
 weights(W::SpatialWeights, i::Int)::Vector{Float64} = W.weights[i];
 
@@ -67,13 +47,6 @@ In-place transformation of the weights using the specified `style`.
 `style` can be one of the following:
 - `:binary`: 1 if neighbor, 0 if not.
 - `:row`: row-standardized. Each row sum equals one.
-
-# Examples
-```jldoctest
-julia> W = SpatialWeights([0 1 0; 1 0 1; 0 1 0]);
-
-julia> wtransform!(W, :row)
-```
 """
 function wtransform!(W::SpatialWeights, style::Symbol)
 
@@ -113,45 +86,18 @@ end
 """
     wtransformation (W::SpatialWeights)
 Return the current transformation of the spatial weights.
-
-# Examples
-```jldoctest
-julia> W = SpatialWeights([0 1 0; 1 0 1; 0 1 0]);
-
-julia> wtransform!(W, :row)
-
-julia> wtransformation(W)
-:row
-```
 """
 wtransformation(W::SpatialWeights)::Symbol = W.transform ;
 
 """
     nislands (W::SpatialWeights)
 Return the number of islands in the spatial weights object.
-
-# Examples
-```jldoctest
-julia> W = SpatialWeights([0 1 0; 1 0 1; 0 0 0]);
-
-julia> nislands(W)
-1
-```
 """
 nislands(W::SpatialWeights)::Int64 = sum(W.nneights .== 0) ;
 
 """
     islands (W::SpatialWeights)
 Return a vector with the islands in the spatial weights object.
-
-# Examples
-```jldoctest
-julia> W = SpatialWeights([0 1 0; 1 0 1; 0 0 0]);
-
-julia> islands(W)
-1-element Vector{Int64}:
- 3
-```
 """
 function islands(W::SpatialWeights)::Vector{Int64}
     islandsvec = Int[]

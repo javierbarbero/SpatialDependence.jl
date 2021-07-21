@@ -29,13 +29,9 @@ function mapclassify(mcr::AbstractCoLocationMapClassificator, x::Vector{Vector{T
             ni = length(x[i])
             (n == ni) || throw(DimensionMismatch("dimensions must match: x[1] has ($(n)), x[$(i)] has ($ni)"))
 
-            if isa(comcr, AbstractGraduatedMapClassificator)
-                mc = mapclassify(comcr, x[i], lower = lower, upper = upper)
-            else
-                mc = mapclassify(comcr, x[i])
-            end
+            mc = mapclassify(comcr, x[i], lower = lower, upper = upper)
             lgroup[:,i] = assignments(mc)
-            lk[i] = mc.k
+            lk[i] = length(mc)
 
             (lk[1] == lk[i]) || throw(DimensionMismatch("classifications categories must match: 1 has ($(lk[1])), $(i) has ($(lk[i]))"))
         end

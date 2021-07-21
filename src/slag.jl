@@ -3,19 +3,6 @@
 """
     slag(W, x)
 Calculate the spatial lag of `x` using the spatial weights `W`.
-
-# Examples
-```jldoctest
-julia> using SpatialDatasets
-
-julia> guerry = sdataset("Guerry");
-
-julia> W = polyneigh(guerry.geometry);
-
-julia> wtransform!(W, :row)
-
-julia> sx = slag(W, guerry.Litercy);
-```
 """
 function slag(W::SpatialWeights, x::Vector{Float64})::Vector{Float64}
     n = W.n

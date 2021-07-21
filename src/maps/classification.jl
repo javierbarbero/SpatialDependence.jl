@@ -56,7 +56,7 @@ Get the lower and upper bounds of the classes.
 
 `bounds(mc)[2][k]` is the upper bound of the ``k``-class.
 """
-function bounds(::AbstractMapClassification)::Tuble{Vector{Float64}, Vector{Float64}} end
+function bounds end
 
 """
     levels(mc::AbstractMapClassification)
@@ -64,7 +64,7 @@ Get the levels of the classes.
 
 `levels(mc)[k]` is the level of the ``k``-class.
 """
-function levels(::AbstractMapClassification)::Vector{String} end
+function level end
 
 """
     assignments(mc::AbstractMapClassification)

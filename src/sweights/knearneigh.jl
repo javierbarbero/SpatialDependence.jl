@@ -3,24 +3,6 @@
 """
     knearneigh(X, Y; k)
 Build a spatial weights object from a set of coordinates using `k` nearest neighbors.
-
-# Examples
-```jldoctest
-julia> using SpatialDatasets
-
-julia> bostonhsg = sdataset("Bostonhsg");
-
-julia> W = knearneigh(bostonhsg.x, bostonhsg.y, k = 10)
-Spatial Weights object 
-Observations: 506 
-Transformation: Binary
-Average number of neighbors: 10.0
-Minimum nunmber of neighbors: 10
-Maximum nunmber of neighbors: 10
-Median number of neighbors: 10.0
-Islands (isloated): 0
-Density: 1.9763% 
-```
 """
 function knearneigh(X::Vector{Float64}, Y::Vector{Float64}; k)::SpatialWeights
 
@@ -53,24 +35,6 @@ end
 """
     knearneigh(P; k)
 Build a spatial weights object from a vector of points using `k` nearest neighbors.
-
-# Examples
-```jldoctest
-julia> using SpatialDatasets
-
-julia> bostonhsg = sdataset("Bostonhsg");
-
-julia> W = knearneigh(bostonhsg.geometry, k = 10)
-Spatial Weights object 
-Observations: 506 
-Transformation: Binary
-Average number of neighbors: 10.0
-Minimum nunmber of neighbors: 10
-Maximum nunmber of neighbors: 10
-Median number of neighbors: 10.0
-Islands (isloated): 0
-Density: 1.9763% 
-```
 """
 function knearneigh(P::Vector; k)::SpatialWeights
 
