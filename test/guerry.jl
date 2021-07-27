@@ -4,7 +4,7 @@
     guerry = sdataset("Guerry")
 
     # In this dataset there is no difference between Queen or Rook contiguity
-    W = polyneigh(guerry.geometry)
+    W = polyneigh(guerry)
     wtransform!(W, :row)
 
     @test nobs(W) == 85

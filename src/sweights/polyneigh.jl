@@ -1,30 +1,25 @@
 # This file contains functions for creating spatial weights from polygon data
 
 # Auxiliar function to return the points from a vector of polygons, multipolygon, or a mix of the two
-function getpointsPoligon(P::Vector)::Tuple{Matrix{Vector{Float64}}, Matrix{Vector{Float64}}}
-    n = length(P)
-    ppointsx = copy.(fill(Float64[], n, 1))
-    ppointsy = copy.(fill(Float64[], n, 1))
-        
-    for i in 1:n
-        
-        c = coordinates(P[i])
+function _getpointsPoligon(P::T where T <:AbstractPolygon)::Tuple{Vector{Float64}, Vector{Float64}}
+    c = coordinates(P)
 
-        ppointsx[i] =  Array{Float64}(undef, length(c[1]))
-        ppointsy[i] =  Array{Float64}(undef, length(c[1]))
-        
-        ctype = typeof(c)
+    ppointsx =  Array{Float64}(undef, length(c[1]))
+    ppointsy =  Array{Float64}(undef, length(c[1]))
 
-        if ctype == Vector{Vector{Vector{Float64}}}
-            # Polygon
-            x = map(a -> a[1], c[1])
-            y = map(a -> a[2], c[1])
+    ppointsx = map(a -> a[1], c[1])
+    ppointsy = map(a -> a[2], c[1])
 
-            ppointsx[i] = x
-            ppointsy[i] = y
-        elseif ctype == Vector{Vector{Vector{Vector{Float64}}}}
-            # Multipolygon
-            xy = reduce(vcat,
+    return ppointsx, ppointsy
+end
+
+function _getpointsPoligon(P::T where T <:AbstractMultiPolygon)::Tuple{Vector{Float64}, Vector{Float64}}
+    c = coordinates(P)
+
+    ppointsx =  Array{Float64}(undef, length(c[1]))
+    ppointsy =  Array{Float64}(undef, length(c[1]))
+
+    xy = reduce(vcat,
                 map(1:length(c)) do i
                     x = map(a -> a[1], c[i][1])
                     y = map(a -> a[2], c[i][1])
@@ -33,20 +28,16 @@ function getpointsPoligon(P::Vector)::Tuple{Matrix{Vector{Float64}}, Matrix{Vect
                 end
             )
 
-            x = xy[:,1]
-            y = xy[:,2]
-
-            ppointsx[i] = x
-            ppointsy[i] = y
-        end
-    end
+    ppointsx = xy[:,1]
+    ppointsy = xy[:,2]
 
     return ppointsx, ppointsy
-
 end
 
+_getpointsPoligon(::Missing) = throw(ArgumentError("Missing geometry"));
+
 # Auxiliar function to return the number of times the points of two polygons hits
-function hits(icoords::Vector{Vector{Float64}}, jcoords::Vector{Vector{Float64}}, critthr::Int64, tol::Float64)::Bool
+function _hits(icoords::Vector{Vector{Float64}}, jcoords::Vector{Vector{Float64}}, critthr::Int64, tol::Float64)::Bool
     nhits = 0
 
     nicoords = length(icoords[1])
@@ -83,11 +74,13 @@ Build a spatial weights object from a vector of polygons `P`.
 - `criterion=:Queen`: neighbour criterion. `:Queen` or `:Rook`.
 - `tol=0.0`: tolerance for polygon contiguity.
 """
-function polyneigh(P::Vector; criterion::Symbol = :Queen, tol::Float64 = 0.0)::SpatialWeights
+function polyneigh(P::Vector{T} where T <:Union{Missing,AbstractPolygon,AbstractMultiPolygon}; criterion::Symbol = :Queen, tol::Float64 = 0.0)::SpatialWeights
+    n = length(P)
 
-    n = size(P, 1)
+    xy = _getpointsPoligon.(P)
 
-    x, y = getpointsPoligon(P)
+    x = map(a -> a[1], xy)
+    y = map(a -> a[2], xy)
 
     # Bounding box
     xmin, ymin = minimum.(x) .- tol, minimum.(y) .- tol
@@ -98,7 +91,7 @@ function polyneigh(P::Vector; criterion::Symbol = :Queen, tol::Float64 = 0.0)::S
     # Select candidates if bouning box overlaps or touches    
     BBpols = sortslices(BBpols, dims=1)
             
-    candidates = copy.(fill(Int[], n, 1))
+    candidates = copy.(fill(Int[], n))
     for i in 1:n-1
         for j in (i+1):n
             if (BBpols[j,1] <= BBpols[i,3]) && # xmin[j] <= xmax[i]
@@ -111,8 +104,8 @@ function polyneigh(P::Vector; criterion::Symbol = :Queen, tol::Float64 = 0.0)::S
     end
     
     # Check neighbours
-    neighs = copy.(fill(Int[], n, 1))
-    weights = copy.(fill(Float64[], n, 1))
+    neighs = copy.(fill(Int[], n))
+    weights = copy.(fill(Float64[], n))
     nneights = zeros(Int,n)
 
     if criterion == :Queen critthr = 1 end
@@ -122,7 +115,7 @@ function polyneigh(P::Vector; criterion::Symbol = :Queen, tol::Float64 = 0.0)::S
         @inbounds for j in candidates[i]
             p1 = [x[i], y[i]]
             p2 = [x[j], y[j]]
-            polhits = hits(p1, p2, critthr, tol)
+            polhits = _hits(p1, p2, critthr, tol)
             
             if polhits  
                 push!(neighs[i], j) 
@@ -145,3 +138,19 @@ function polyneigh(P::Vector; criterion::Symbol = :Queen, tol::Float64 = 0.0)::S
     SpatialWeights(n, neighs, weights, nneights, :binary)
 end
 
+"""
+    polyneigh(A, criterion = :Queen)
+Build a spatial weights object from table A that contains a geometry column.
+
+# Optional Arguments
+- `criterion=:Queen`: neighbour criterion. `:Queen` or `:Rook`.
+- `tol=0.0`: tolerance for polygon contiguity.
+"""
+function polyneigh(A::Any; criterion::Symbol = :Queen, tol::Float64 = 0.0)::SpatialWeights
+    
+    istable(A) || throw(ArgumentError("Unknown geometry or not polygon geometry"))
+
+    (:geometry in propertynames(A)) || throw(ArgumentError("table does not have :geometry information"))
+
+    return polyneigh(A.geometry, criterion = criterion, tol = tol)
+end

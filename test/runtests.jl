@@ -1,6 +1,5 @@
 using SpatialDependence
 using GeoInterface
-using GeoInterface
 using RecipesBase
 using SpatialDatasets
 using StableRNGs

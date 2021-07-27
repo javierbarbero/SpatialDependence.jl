@@ -17,16 +17,16 @@ Compute the global moran index of spatial autocorrelation.
 - `permutations=9999`: number of permutations for the randomization test.
 - `rng=default_rng()`: random number generator for the randomization test.
 """
-function moran(x::Vector{Float64}, W::SpatialWeights; permutations::Int64 = 9999,
+function moran(x::Vector{T} where T<:Real, W::SpatialWeights; permutations::Int = 9999,
     rng::AbstractRNG = default_rng())::GlobalMoran
 
     n = length(x)
     z = x .- mean(x)    
     
-    S0 = sum(sum.(W.weights))
+    S0 = sum(sum.(W.weights::Vector{Vector{Float64}}))
 
     # Auxiliar function to calculate Moran's I
-    function moran_calc(z::Vector, W::SpatialWeights)
+    function moran_calc(z::Vector, W::SpatialWeights)::Float64
         Wz = slag(W, z)
         return (sum(Wz .* z) / S0) / (sum(z .* z) / n)
     end

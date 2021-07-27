@@ -6,7 +6,7 @@
     # ----------------
     #  Distance  with 3
     # ----------------
-    Wdist3 = dnearneigh(boston.geometry, threshold = 3)
+    Wdist3 = dnearneigh(boston, threshold = 3)
     wtransform!(Wdist3, :row)   
 
     @test nobs(Wdist3) == 506
@@ -24,7 +24,7 @@
     # ----------------
     #  Distance  with 4
     # ----------------
-    Wdist4 = dnearneigh(boston.geometry, threshold = 4)
+    Wdist4 = dnearneigh(boston, threshold = 4)
     wtransform!(Wdist4, :row)
 
     @test nobs(Wdist4) == 506
@@ -46,7 +46,7 @@
     # ----------------
     #  KNN with k = 10
     # ----------------
-    Wknn10 = knearneigh(boston.geometry, k = 10)
+    Wknn10 = knearneigh(boston, k = 10)
     wtransform!(Wknn10, :row)
 
     @test nobs(Wknn10) == 506

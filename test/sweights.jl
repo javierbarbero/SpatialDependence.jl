@@ -210,6 +210,15 @@
         @test neighbors(W, 9) == [5, 6, 8]
     end
 
+    @testset "Polygon Missing" begin
+        PM = Vector{Union{Missing,Polygon}}(undef, 10)
+        PM[1:9] = polygons[1:9]
+        PM[10] = missing
+
+        @test typeof(PM) == Vector{Union{Missing,Polygon}}
+        @test_throws ArgumentError polyneigh(PM) # Missin geometry error
+    end
+
     # Points k near neighbors
     @testset "K near neighbors " begin
         W = knearneigh(points, k = 3)

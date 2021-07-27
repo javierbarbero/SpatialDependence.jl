@@ -1,8 +1,8 @@
 # This file contains the structure and common functions for SpatialWeights
 mutable struct SpatialWeights
     n::Int64
-    neighs::Matrix{Vector{Int64}}
-    weights::Matrix{Vector{Float64}}
+    neighs::Vector{Vector{Int64}}
+    weights::Vector{Vector{Float64}}
     nneights::Vector{Int64}
     transform::Symbol
 end
@@ -13,8 +13,8 @@ function SpatialWeights(W::AbstractMatrix)
 
     n == nj || throw(ArgumentError("matrix is not square"))
     
-    neighs = copy.(fill(Int[], n, 1))
-    weights = copy.(fill(Float64[], n, 1))
+    neighs = copy.(fill(Int[], n))
+    weights = copy.(fill(Float64[], n))
     nneights = zeros(Int, n)
 
     for i in 1:n
@@ -122,7 +122,7 @@ Base.maximum(W::SpatialWeights)::Int64 = maximum(W.nneights);
 median(W::SpatialWeights)::Float64 = median(W.nneights);
 
 # Transformation functions
-function Matrix(W::SpatialWeights)::Matrix{Float64}
+function Base.Matrix(W::SpatialWeights)::Matrix{Float64}
     n = W.n
 
     mat = zeros(n, n)
