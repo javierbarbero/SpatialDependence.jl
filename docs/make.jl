@@ -7,6 +7,12 @@ using StableRNGs
 # Workaround for GR errors when plotting
 ENV["GKSwstype"] = "100"
 
+# Load datasets to not display Downloading Artifact message in the documentation
+begin
+    guerry = sdataset("Guerry")
+    boston = sdataset("Bostonhsg")
+end
+
 DocMeta.setdocmeta!(SpatialDependence, :DocTestSetup, :(using SpatialDependence); recursive=true)
 
 makedocs(;
@@ -22,9 +28,9 @@ makedocs(;
     pages=[
         "Home" => "index.md",
         "Spatial Weight Matrices" => "sweightmatrices.md",
-        "Spatial Lag" => "spatiallag.md",
-        "Choropleth Maps" => "choropleth.md",
+        "Spatial Lag" => "spatiallag.md",        
         "Global Spatial Autocorrelation" => "gspatialautocorrelation.md",
+        "Choropleth Maps" => "choropleth.md",
         "API" => "api.md"
     ],
 )

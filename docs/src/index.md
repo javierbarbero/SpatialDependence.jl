@@ -46,13 +46,13 @@ moran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
 
 ```@example intro
 # Moran Scatterplot of the Litercy variable
-plot(guerry.Litercy, W, true, xlabel = "Litercy")
+plot(guerry.Litercy, W, xlabel = "Litercy")
 ```
 
 ## Documentation index
 
 ```@contents
-Pages = ["sweightmatrices.md", "spatiallag.md", "choropleth.md", "gspatialautocorrelation.md"]
+Pages = ["sweightmatrices.md", "spatiallag.md", "gspatialautocorrelation.md", "choropleth.md"]
 Depth = 2
 ```
 

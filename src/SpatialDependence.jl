@@ -39,17 +39,22 @@ module SpatialDependence
         sparse,
 
         # Spatial autocorrelation
+        AbstractGlobalSpatialAutocorrelation,
         GlobalMoran,
         moran,
+        GlobalGeary,
+        geary,
+        score,
+        scoreperms,
+        pvalue,
         
-        # Statistics
+        # Re-export from Statistics
         nobs,
         mean,
         median,
         std,
         score,
         zscore,
-        pvalue,
 
         # Choropleth Maps and Classification<
         AbstractMapClassificator,
@@ -88,7 +93,9 @@ module SpatialDependence
 
     include("slag.jl")
 
+    include("scor/global.jl")
     include("scor/moran.jl")
+    include("scor/geary.jl")
 
     include("maps/classification.jl")
     include("maps/graduated.jl")

@@ -19,7 +19,6 @@
 
     # Moran's I
     mboston = moran(boston.MEDV, Wdist3, permutations = 0)
-    # TO DO: Remove isolates or not?
 
     # ----------------
     #  Distance  with 4
@@ -60,17 +59,25 @@
     mboston = moran(boston.MEDV, Wknn10, rng = StableRNG(1234567), permutations = 999)
 
     @test score(mboston) ≈ 0.530743 atol = 1e-5
-    @test pvalue(mboston) ≈ 0.001 atol = 1e-5
     @test std(mboston) ≈ 0.018956 atol = 1e-5
     @test zscore(mboston) ≈ 28.080397 atol = 1e-5
+    @test pvalue(mboston) ≈ 0.001 atol = 1e-5
 
-    # Moran I with 9999 permutations
+    # Moran's I with 9999 permutations
     mboston = moran(boston.MEDV, Wknn10, rng = StableRNG(1234567), permutations = 9999)
 
     @test score(mboston) ≈ 0.530743 atol = 1e-5
-    @test pvalue(mboston) ≈ 0.0001 atol = 1e-5
     @test std(mboston) ≈ 0.018541 atol = 1e-5
     @test zscore(mboston) ≈ 28.727399 atol = 1e-5
+    @test pvalue(mboston) ≈ 0.0001 atol = 1e-5
+
+    # Geary's c I with 9999 permutations
+    cboston = geary(boston.MEDV, Wknn10, rng = StableRNG(1234567), permutations = 9999)
+
+    @test score(cboston) ≈ 0.432582 atol = 1e-5
+    @test std(cboston) ≈ 0.022467 atol = 1e-5
+    @test zscore(cboston) ≈ -25.249835 atol = 1e-5
+    @test pvalue(cboston) ≈ 0.0001 atol = 1e-5
 
     # ----------------
     #  Plot Recipes
@@ -80,7 +87,7 @@
     @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), mboston)
 
     # Test Moran's Plot
-    @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), boston.MEDV, Wknn10, false)
-    @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), boston.MEDV, Wknn10, true)
+    @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), boston.MEDV, Wknn10)
+    @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}([(:standardize, false)]), boston.MEDV, Wknn10)
 
 end

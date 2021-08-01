@@ -1,10 +1,11 @@
 # Plot recipes
 
 # Recipe for Moran plot
-@recipe function f(x::Vector{Float64}, W::SpatialWeights, zstandardize::Bool = false)
+@recipe function f(x::Vector{Float64}, W::SpatialWeights)
 
     Wx = slag(W, x)
 
+    zstandardize  = get(plotattributes, :standardize, true)
     if zstandardize
         z = standardize(ZScoreTransform, x)
         Wz = standardize(ZScoreTransform, Wx)
@@ -46,25 +47,25 @@
 
 end
 
-# Recipe for Moran's I distribution
-@recipe function plot(x::GlobalMoran)
+# Recipe for Global Spatial Autocorrelation reference distribution
+@recipe function plot(x::AbstractGlobalSpatialAutocorrelation)
 
-    I = x.I
-    Iperms = x.Iperms
+    S = score(x)
+    Sperms = scoreperms(x)
 
     legend --> false
 
     # Histogram of permutated values
     @series begin
         seriestype := :histogram
-        Iperms
+        Sperms
     end
 
     # Vertical line at Moran's i
     @series begin
         seriestype := :vline
         seriescolor --> :red
-        [I]
+        [S]
     end
 
 end
