@@ -15,6 +15,9 @@
     @test nislands(W) == 0
     @test islands(W) == []
 
+    # Spatial lag
+    @test W * guerry.Litercy == slag(W, guerry.Litercy)
+
     # Moran's I
     mguerry = moran(guerry.Litercy, W, rng = StableRNG(1234567), permutations = 9999)
 

@@ -21,3 +21,5 @@ function slag(W::SpatialWeights, x::Vector{T} where T<:Real)::Vector{Real}
     return sx
 
 end
+
+Base.:*(W::SpatialWeights, x::Vector{T} where T<:Real)::Vector{Real} = slag(W, x);
