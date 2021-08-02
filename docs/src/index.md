@@ -37,9 +37,6 @@ W = polyneigh(guerry.geometry);
 ```
 
 ```@example intro
-# Row-standardize the spatial weights matrix
-wtransform!(W, :row);
-
 # Global Moran test of Spatial Autocorrelation of the Litercy variable
 moran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
 ```

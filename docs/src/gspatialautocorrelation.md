@@ -17,7 +17,6 @@ using Plots
 
 guerry = sdataset("Guerry")
 W = polyneigh(guerry) 
-wtransform!(W, :row)
 nothing # hide
 ```
 

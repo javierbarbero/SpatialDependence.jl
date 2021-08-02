@@ -32,9 +32,20 @@
         @test neighbors(W, 8) == [5, 7, 9]
         @test neighbors(W, 9) == [6, 8]
 
-        @test wtransformation(W) == :binary
+        # Default is row-standardized weights
+        @test wtransformation(W) == :row
 
-        # Binary weights
+        @test weights(W, 1) == [0.5, 0.5]
+        @test weights(W, 2) == [1/3, 1/3, 1/3]
+        @test weights(W, 3) == [0.5, 0.5]
+        @test weights(W, 4) == [1/3, 1/3, 1/3]
+        @test weights(W, 5) == [1/4, 1/4, 1/4, 1/4]
+        @test weights(W, 6) == [1/3, 1/3, 1/3]
+        @test weights(W, 7) == [0.5, 0.5]
+        @test weights(W, 8) == [1/3, 1/3, 1/3]
+        @test weights(W, 9) == [0.5, 0.5]
+
+        # Transform to Binary weights
         wtransform!(W, :binary)
 
         @test weights(W, 1) == [1, 1]
@@ -47,7 +58,7 @@
         @test weights(W, 8) == [1, 1, 1]
         @test weights(W, 9) == [1, 1]
 
-        # Row standardization
+        # Copy transformed to Row-standardization
         Wrow = wtransform(W, :row)
 
         @test wtransformation(Wrow) == :row
@@ -101,22 +112,7 @@
         @test neighbors(W, 8) == [4, 5, 6, 7, 9]
         @test neighbors(W, 9) == [5, 6, 8]
 
-        @test wtransformation(W) == :binary
-
-        wtransform!(W, :binary)
-
-        @test weights(W, 1) == [1, 1, 1]
-        @test weights(W, 2) == [1, 1, 1, 1, 1]
-        @test weights(W, 3) == [1, 1, 1]
-        @test weights(W, 4) == [1, 1, 1, 1, 1]
-        @test weights(W, 5) == [1, 1, 1, 1, 1, 1, 1, 1]
-        @test weights(W, 6) == [1, 1, 1, 1, 1]
-        @test weights(W, 7) == [1, 1, 1]
-        @test weights(W, 8) == [1, 1, 1, 1, 1]
-        @test weights(W, 9) == [1, 1, 1]
-
-        wtransform!(W, :row)
-
+        # Row-standardized weights
         @test wtransformation(W) == :row
 
         @test weights(W, 1) == [1/3, 1/3, 1/3]
@@ -127,7 +123,21 @@
         @test weights(W, 6) == [1/5, 1/5, 1/5, 1/5, 1/5]
         @test weights(W, 7) == [1/3, 1/3, 1/3]
         @test weights(W, 8) == [1/5, 1/5, 1/5, 1/5, 1/5]
-        @test weights(W, 9) == [1/3, 1/3, 1/3]
+        @test weights(W, 9) == [1/3, 1/3, 1/3]        
+
+        # Binary weights
+        wtransform!(W, :binary)
+        @test wtransformation(W) == :binary
+
+        @test weights(W, 1) == [1, 1, 1]
+        @test weights(W, 2) == [1, 1, 1, 1, 1]
+        @test weights(W, 3) == [1, 1, 1]
+        @test weights(W, 4) == [1, 1, 1, 1, 1]
+        @test weights(W, 5) == [1, 1, 1, 1, 1, 1, 1, 1]
+        @test weights(W, 6) == [1, 1, 1, 1, 1]
+        @test weights(W, 7) == [1, 1, 1]
+        @test weights(W, 8) == [1, 1, 1, 1, 1]
+        @test weights(W, 9) == [1, 1, 1]
 
         @test_nowarn show(IOBuffer(), W)
     end
@@ -259,12 +269,41 @@
         @test neighbors(W, 1) == [2]
         @test neighbors(W, 2) == [1, 3]
         @test neighbors(W, 3) == [2]
+
+        # Row-standardize by default
+        @test wtransformation(W) == :row
+        @test weights(W, 1) == [1]
+        @test weights(W, 2) == [0.5, 0.5]
+        @test weights(W, 3) == [1]
+
+        # Do not standardize
+        W = SpatialWeights([0 2 0; 3 0 4; 0 5 0], standardize = false)
+        @test wtransformation(W) == :original
+        @test weights(W, 1) == [2]
+        @test weights(W, 2) == [3, 4]
+        @test weights(W, 3) == [5] 
+
     end
 
     # Test conversions
     @testset "Matrix converion" begin   
         W = polyneigh(polygons, criterion = :Rook)
 
+        @test Matrix(W) ==
+        [
+            0.0   0.5   0.0   0.5   0.0   0.0   0.0   0.0   0.0
+            1/3   0.0   1/3   0.0   1/3   0.0   0.0   0.0   0.0
+            0.0   0.5   0.0   0.0   0.0   0.5   0.0   0.0   0.0
+            1/3   0.0   0.0   0.0   1/3   0.0   1/3   0.0   0.0
+            0.0   0.25  0.0   0.25  0.0   0.25  0.0   0.25  0.0
+            0.0   0.0   1/3   0.0   1/3   0.0   0.0   0.0   1/3
+            0.0   0.0   0.0   0.5   0.0   0.0   0.0   0.5   0.0
+            0.0   0.0   0.0   0.0   1/3   0.0   1/3   0.0   1/3
+            0.0   0.0   0.0   0.0   0.0   0.5   0.0   0.5   0.0
+        ]
+
+        # Binary weights
+        wtransform!(W, :binary)
         @test Matrix(W) == 
         [
             0.0  1.0  0.0  1.0  0.0  0.0  0.0  0.0  0.0;
@@ -278,21 +317,8 @@
             0.0  0.0  0.0  0.0  0.0  1.0  0.0  1.0  0.0 
         ]
 
-        @test Matrix(sparse(W)) == Matrix(W)
+        @test Matrix(sparse(W)) == Matrix(W)        
 
-        wtransform!(W, :row)
-        @test Matrix(W) ==
-        [
-            0.0   0.5   0.0   0.5   0.0   0.0   0.0   0.0   0.0
-            1/3   0.0   1/3   0.0   1/3   0.0   0.0   0.0   0.0
-            0.0   0.5   0.0   0.0   0.0   0.5   0.0   0.0   0.0
-            1/3   0.0   0.0   0.0   1/3   0.0   1/3   0.0   0.0
-            0.0   0.25  0.0   0.25  0.0   0.25  0.0   0.25  0.0
-            0.0   0.0   1/3   0.0   1/3   0.0   0.0   0.0   1/3
-            0.0   0.0   0.0   0.5   0.0   0.0   0.0   0.5   0.0
-            0.0   0.0   0.0   0.0   1/3   0.0   1/3   0.0   1/3
-            0.0   0.0   0.0   0.0   0.0   0.5   0.0   0.5   0.0
-        ]
     end
 
     # Regular lattice

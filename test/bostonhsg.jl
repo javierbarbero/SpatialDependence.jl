@@ -7,7 +7,6 @@
     #  Distance  with 3
     # ----------------
     Wdist3 = dnearneigh(boston, threshold = 3)
-    wtransform!(Wdist3, :row)   
 
     @test nobs(Wdist3) == 506
     @test mean(Wdist3) ≈ 44.711462 atol = 1e-5
@@ -24,7 +23,6 @@
     #  Distance  with 4
     # ----------------
     Wdist4 = dnearneigh(boston, threshold = 4)
-    wtransform!(Wdist4, :row)
 
     @test nobs(Wdist4) == 506
     @test mean(Wdist4) ≈ 72.225296 atol = 1e-5
@@ -46,7 +44,6 @@
     #  KNN with k = 10
     # ----------------
     Wknn10 = knearneigh(boston, k = 10)
-    wtransform!(Wknn10, :row)
 
     @test nobs(Wknn10) == 506
     @test mean(Wknn10) == 10

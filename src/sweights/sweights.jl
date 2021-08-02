@@ -7,7 +7,7 @@ mutable struct SpatialWeights
     transform::Symbol
 end
 
-function SpatialWeights(W::AbstractMatrix)
+function SpatialWeights(W::AbstractMatrix; standardize = true)
 
     n, nj = size(W)
 
@@ -19,11 +19,15 @@ function SpatialWeights(W::AbstractMatrix)
 
     for i in 1:n
         neighs[i] = (1:n)[W[i,:] .!= 0]
-        weights[i] = W[i,neighs[i]]
         nneighs[i] = length(neighs[i])
+        if standardize
+            weights[i] = ones(nneighs[i]) ./ nneighs[i]
+        else
+            weights[i] = W[i,neighs[i]]
+        end        
     end
 
-    SpatialWeights(n, neighs, weights, nneighs, :original)
+    SpatialWeights(n, neighs, weights, nneighs, standardize ? :row : :original)
 
 end
 

@@ -5,7 +5,6 @@
 
     # In this dataset there is no difference between Queen or Rook contiguity
     W = polyneigh(guerry)
-    wtransform!(W, :row)
 
     @test nobs(W) == 85
     @test mean(W) ≈ 4.941176 atol = 1e-5

@@ -25,10 +25,10 @@ function knearneigh(X::Vector{Float64}, Y::Vector{Float64}; k::Int)::SpatialWeig
         neighsi = idxs[i]    
         neighs[i] = sort!(neighsi[neighsi .!= i])
         nneighs[i] = length(neighs[i])
-        weights[i] = ones(nneighs[i])        
+        weights[i] = ones(nneighs[i]) ./ nneighs[i]    
     end
         
-    SpatialWeights(n, neighs, weights, nneighs, :Binary)
+    SpatialWeights(n, neighs, weights, nneighs, :row)
 
 end
 

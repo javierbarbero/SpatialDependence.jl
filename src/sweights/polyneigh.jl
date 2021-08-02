@@ -119,23 +119,20 @@ function polyneigh(P::Vector{T} where T <:Union{Missing,AbstractPolygon,Abstract
             
             if polhits  
                 push!(neighs[i], j) 
-                push!(neighs[j], i) 
-
-                push!(weights[i], 1)
-                push!(weights[j], 1)     
-                
+                push!(neighs[j], i)                
                 nneighs[i] += 1
                 nneighs[j] += 1
               end
         end        
     end
 
-    # Sort neighbours lists
+    # Sort neighbours lists and compute weights
     for i in 1:n
         sort!(neighs[i])
+        weights[i] = ones(nneighs[i]) ./ nneighs[i]
     end
 
-    SpatialWeights(n, neighs, weights, nneighs, :binary)
+    SpatialWeights(n, neighs, weights, nneighs, :row)
 end
 
 """
