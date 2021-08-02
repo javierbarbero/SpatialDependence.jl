@@ -295,4 +295,33 @@
         ]
     end
 
+    # Regular lattice
+    @testset "Regular lattice" begin   
+        regrightup = reggeomlattice(3, 3, direction = :rightup)
+        regrightdown = reggeomlattice(3, 3, direction = :rightdown)
+        regleftdown = reggeomlattice(3, 3, direction = :leftdown)
+        regleftup = reggeomlattice(3, 3, direction = :leftup)
+
+        @test coordinates(regrightup[1])   == [[[[1.0, 1.0], [2.0, 1.0], [2.0, 2.0], [1.0, 2.0]]]]
+        @test coordinates(regrightdown[1]) == [[[[1.0, 3.0], [2.0, 3.0], [2.0, 4.0], [1.0, 4.0]]]]
+        @test coordinates(regleftdown[1])  == [[[[3.0, 3.0], [4.0, 3.0], [4.0, 4.0], [3.0, 4.0]]]]
+        @test coordinates(regleftup[1])    == [[[[3.0, 1.0], [4.0, 1.0], [4.0, 2.0], [3.0, 2.0]]]]
+
+        WRook = polyneigh(regrightup, criterion = :Rook)
+        @test minimum(WRook) == 2
+        @test maximum(WRook) == 4
+        @test median(WRook) == 3.0
+
+        WhtQueen = polyneigh(regrightup, criterion = :Queen)
+        @test minimum(WhtQueen) == 3
+        @test maximum(WhtQueen) == 8
+        @test median(WhtQueen) == 5.0
+
+        regpoints = reggeomlattice(3, 3, gtype = :point)
+        Wpoint = dnearneigh(regpoints, threshold = 1.0)
+        @test minimum(Wpoint) == 2
+        @test maximum(Wpoint) == 4
+        @test median(WRook) == 3.0
+    end
+
 end

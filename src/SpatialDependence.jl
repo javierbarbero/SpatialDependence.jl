@@ -6,7 +6,7 @@ module SpatialDependence
     [SpatialDependence repository](https://github.com/javierbarbero/SpatialDependence.jl).
     """    
 
-    using GeoInterface: AbstractGeometry, AbstractPoint, AbstractPolygon, AbstractMultiPolygon, coordinates, geotype, Point, shapecoords
+    using GeoInterface: AbstractGeometry, AbstractPoint, AbstractPolygon, AbstractMultiPolygon, Point, Polygon, MultiPolygon, coordinates, geotype, shapecoords
     using NearestNeighbors: KDTree, knn, inrange
     using PlotUtils: palette
     using Random: shuffle, AbstractRNG, default_rng
@@ -37,6 +37,7 @@ module SpatialDependence
         wtransformation,
         slag,
         sparse,
+        reggeomlattice,
 
         # Spatial autocorrelation
         AbstractGlobalSpatialAutocorrelation,
@@ -90,6 +91,7 @@ module SpatialDependence
     include("sweights/dnearneigh.jl")
     include("sweights/knearneigh.jl")
     include("sweights/polyneigh.jl")
+    include("sweights/lattice.jl")
 
     include("slag.jl")
 
