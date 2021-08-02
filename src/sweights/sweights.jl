@@ -33,19 +33,19 @@ end
 
 """
     neighbors(W::SpatialWeights, i::Int)
-Return a vector with the neighbors of `i`.
+Return a vector with the neighbors of ``i``.
 """
 neighbors(W::SpatialWeights, i::Int)::Vector{Int64} = W.neighs[i];
 
 """
     weights(W::SpatialWeights, i::Int)
-Return a vector with the weights of the neighbors of `i`.
+Return a vector with the weights of the neighbors of ``i``.
 """
 weights(W::SpatialWeights, i::Int)::Vector{Float64} = W.weights[i];
 
 """
     wtransform!(W::SpatialWeights, style::Symbol)
-In-place transformation of the weights using the specified `style`.
+In-place transformation of the weights using the specified ``style``.
 
 # Weights transformation
 `style` can be one of the following:
