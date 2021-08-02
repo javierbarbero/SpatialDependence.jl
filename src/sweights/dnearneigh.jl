@@ -18,16 +18,16 @@ function dnearneigh(X::Vector{Float64}, Y::Vector{Float64}; threshold::Real)::Sp
     # Check neighbours
     neighs = copy.(fill(Int[], n))
     weights = copy.(fill(Float64[], n))
-    nneights = zeros(Int,n)
+    nneighs = zeros(Int,n)
         
     for i in 1:n   
         neighsi = idxs[i]    
         neighs[i] = sort!(neighsi[neighsi .!= i])
-        nneights[i] = length(neighs[i])
-        weights[i] = ones(nneights[i])        
+        nneighs[i] = length(neighs[i])
+        weights[i] = ones(nneighs[i])        
     end
         
-    SpatialWeights(n, neighs, weights, nneights, :binary)
+    SpatialWeights(n, neighs, weights, nneighs, :binary)
 
 end
 

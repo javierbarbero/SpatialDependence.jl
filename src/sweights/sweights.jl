@@ -3,7 +3,7 @@ mutable struct SpatialWeights
     n::Int64
     neighs::Vector{Vector{Int64}}
     weights::Vector{Vector{Float64}}
-    nneights::Vector{Int64}
+    nneighs::Vector{Int64}
     transform::Symbol
 end
 
@@ -15,15 +15,15 @@ function SpatialWeights(W::AbstractMatrix)
     
     neighs = copy.(fill(Int[], n))
     weights = copy.(fill(Float64[], n))
-    nneights = zeros(Int, n)
+    nneighs = zeros(Int, n)
 
     for i in 1:n
         neighs[i] = (1:n)[W[i,:] .!= 0]
         weights[i] = W[i,neighs[i]]
-        nneights[i] = length(neighs[i])
+        nneighs[i] = length(neighs[i])
     end
 
-    SpatialWeights(n, neighs, weights, nneights, :original)
+    SpatialWeights(n, neighs, weights, nneighs, :original)
 
 end
 
@@ -93,7 +93,7 @@ wtransformation(W::SpatialWeights)::Symbol = W.transform ;
     nislands (W::SpatialWeights)
 Return the number of islands in the spatial weights object.
 """
-nislands(W::SpatialWeights)::Int64 = sum(W.nneights .== 0) ;
+nislands(W::SpatialWeights)::Int64 = sum(W.nneighs .== 0) ;
 
 """
     islands (W::SpatialWeights)
@@ -102,7 +102,7 @@ Return a vector with the islands in the spatial weights object.
 function islands(W::SpatialWeights)::Vector{Int64}
     islandsvec = Int[]
     for i = 1:W.n
-        if W.nneights[i] == 0
+        if W.nneighs[i] == 0
             push!(islandsvec, i)
         end
     end
@@ -113,13 +113,13 @@ end
 # Descriptive statistics
 nobs(W::SpatialWeights)::Int64 = W.n;
 
-mean(W::SpatialWeights)::Float64 = mean(W.nneights);
+mean(W::SpatialWeights)::Float64 = mean(W.nneighs);
 
-Base.minimum(W::SpatialWeights)::Int64 = minimum(W.nneights);
+Base.minimum(W::SpatialWeights)::Int64 = minimum(W.nneighs);
 
-Base.maximum(W::SpatialWeights)::Int64 = maximum(W.nneights);
+Base.maximum(W::SpatialWeights)::Int64 = maximum(W.nneighs);
 
-median(W::SpatialWeights)::Float64 = median(W.nneights);
+median(W::SpatialWeights)::Float64 = median(W.nneighs);
 
 # Transformation functions
 function Base.Matrix(W::SpatialWeights)::Matrix{Float64}
@@ -136,7 +136,7 @@ end
 
 function sparse(W::SpatialWeights)::SparseMatrixCSC{Float64, Int64}
     n = W.n
-    tn = sum(W.nneights)
+    tn = sum(W.nneighs)
 
     # Build I, J and V vectors to build the spatial matrix
     I = zeros(Int, tn)
@@ -145,12 +145,12 @@ function sparse(W::SpatialWeights)::SparseMatrixCSC{Float64, Int64}
 
     nlast = 0
     for i in 1:n
-        sub = (nlast + 1):(nlast + W.nneights[i])
-        I[sub] = fill(i, W.nneights[i])
+        sub = (nlast + 1):(nlast + W.nneighs[i])
+        I[sub] = fill(i, W.nneighs[i])
         J[sub] = W.neighs[i]
         V[sub] = W.weights[i]
 
-        nlast = nlast + W.nneights[i]
+        nlast = nlast + W.nneighs[i]
     end
 
     return sparse(I, J, V)
@@ -167,6 +167,6 @@ function Base.show(io::IO, W::SpatialWeights)
     print(io, "Maximum nunmber of neighbors: ", maximum(W), "\n")
     print(io, "Median number of neighbors: ", median(W), "\n")
     print(io, "Islands (isloated): ", nislands(W), "\n")
-    print(io, "Density: ", round(100 * sum(W.nneights) / (W.n  * W.n), digits = 4), "% \n")
+    print(io, "Density: ", round(100 * sum(W.nneighs) / (W.n  * W.n), digits = 4), "% \n")
 
 end

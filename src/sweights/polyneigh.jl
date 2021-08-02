@@ -106,7 +106,7 @@ function polyneigh(P::Vector{T} where T <:Union{Missing,AbstractPolygon,Abstract
     # Check neighbours
     neighs = copy.(fill(Int[], n))
     weights = copy.(fill(Float64[], n))
-    nneights = zeros(Int,n)
+    nneighs = zeros(Int,n)
 
     if criterion == :Queen critthr = 1 end
     if criterion == :Rook  critthr = 2 end
@@ -124,8 +124,8 @@ function polyneigh(P::Vector{T} where T <:Union{Missing,AbstractPolygon,Abstract
                 push!(weights[i], 1)
                 push!(weights[j], 1)     
                 
-                nneights[i] += 1
-                nneights[j] += 1
+                nneighs[i] += 1
+                nneighs[j] += 1
               end
         end        
     end
@@ -135,7 +135,7 @@ function polyneigh(P::Vector{T} where T <:Union{Missing,AbstractPolygon,Abstract
         sort!(neighs[i])
     end
 
-    SpatialWeights(n, neighs, weights, nneights, :binary)
+    SpatialWeights(n, neighs, weights, nneighs, :binary)
 end
 
 """
