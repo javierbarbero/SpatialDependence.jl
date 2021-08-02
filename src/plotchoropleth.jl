@@ -23,7 +23,7 @@ function mapshapecoords(P::Vector{<:Union{Missing,AbstractPoint}})::Tuple{Vector
 end
 
 # Choropleth Map
-@recipe function f(A::Any, colorvar::Union{Vector,Symbol}, mcr::AbstractMapClassificator)
+@recipe function f(A::Any, colorvar::Union{AbstractVector,Symbol}, mcr::AbstractMapClassificator)
 
     if istable(A)
         # If Table or DataFrame
@@ -34,8 +34,6 @@ end
             cvar = A[!, colorvar]
         elseif isa(colorvar, Vector{Symbol})
             cvar = [A[!, c] for c in colorvar]
-            println(typeof(cvar))
-            println(cvar)
         else
             cvar = colorvar
         end

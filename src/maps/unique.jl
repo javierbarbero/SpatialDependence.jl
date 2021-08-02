@@ -10,7 +10,7 @@ struct UniqueMapClassification <: AbstractMapClassification
     grouplabs::Vector{String}
 end
 
-function mapclassify(mcr::AbstractUniqueMapClassificator, x::Vector)::UniqueMapClassification  
+function mapclassify(mcr::AbstractUniqueMapClassificator, x::AbstractVector)::UniqueMapClassification  
 
     uniq = unique(x)
     k = length(uniq)
