@@ -63,7 +63,7 @@ The interpretation of Gery's c depends on its value and significance:
 
 ## Reference distribution
 
-The random permutation operation results in a reference distribution for the statistic under the null hypothesis of spatial randomness. If the [Plots.jl](http://docs.juliaplots.org) package is loaded, it is possible to plot the reference distribution together with the observed statistic (vertical red line) using the `plot` command:
+The random permutation operation results in a reference distribution for the statistic under the null hypothesis of spatial randomness. If the [Plots.jl](http://docs.juliaplots.org) package is loaded, it is possible to plot the reference distribution together with the observed statistic (vertical red line) using the `plot` function:
 
 ```@example gscor
 Ilitercy = moran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))

@@ -121,7 +121,12 @@ Wbin = wtransform(W, :binary)
 
 ## Spatial Weights information
 
-There is a set of commands to obtain information about spatial weights objects.
+There is a set of functions to obtain information about spatial weights objects.
+
+The number of neighbors of each observation is returned with the `cardinalities` function:
+```@example polyW
+cardinalities(W)
+```
 
 A vector of neighbors for particular observations is obtained with the `neighbors` function:
 ```@example polyW

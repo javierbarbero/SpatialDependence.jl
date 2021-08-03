@@ -22,6 +22,8 @@
         @test nislands(W) == 0
         @test islands(W) == []
 
+        @test cardinalities(W) == [2, 3, 2, 3, 4, 3, 2, 3, 2]
+
         @test neighbors(W, 1) == [2, 4]
         @test neighbors(W, 2) == [1, 3, 5]
         @test neighbors(W, 3) == [2, 6]
@@ -101,6 +103,8 @@
         @test median(W) == 5.0
         @test nislands(W) == 0
         @test islands(W) == []
+
+        @test cardinalities(W) == [3, 5, 3, 5, 8, 5, 3, 5, 3]
 
         @test neighbors(W, 1) == [2, 4, 5]
         @test neighbors(W, 2) == [1, 3, 4, 5, 6]

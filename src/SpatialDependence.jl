@@ -28,6 +28,7 @@ module SpatialDependence
         polyneigh,
 
         # Spatial Weights functions
+        cardinalities,
         neighbors, 
         weights, 
         nislands, 

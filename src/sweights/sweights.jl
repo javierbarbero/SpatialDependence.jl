@@ -32,6 +32,12 @@ function SpatialWeights(W::AbstractMatrix; standardize = true)
 end
 
 """
+    cardinalities(W::SpatialWeights)
+Return a vector with the number of neighbors of each observation.
+"""
+cardinalities(W::SpatialWeights)::Vector{Int64} = W.nneighs;
+
+"""
     neighbors(W::SpatialWeights, i::Int)
 Return a vector with the neighbors of ``i``.
 """
