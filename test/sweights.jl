@@ -253,6 +253,20 @@
         @test neighbors(W, 9) == [5, 6, 8]
     end
 
+    # Polygon mean center
+    @testset "Polygon meancenter" begin
+        x, y = meancenter(reggeomlattice(3, 3, direction = :rightup))
+        @test x == [1.5, 2.5, 3.5, 1.5, 2.5, 3.5, 1.5, 2.5, 3.5]
+        @test y == [1.5, 1.5, 1.5, 2.5, 2.5, 2.5, 3.5, 3.5, 3.5]
+    end
+
+    # Polygon centroids
+    @testset "Polygon centroid" begin
+        x, y = centroid(reggeomlattice(3, 3, direction = :rightup))
+        @test x == [1.5, 2.5, 3.5, 1.5, 2.5, 3.5, 1.5, 2.5, 3.5]
+        @test y == [1.5, 1.5, 1.5, 2.5, 2.5, 2.5, 3.5, 3.5, 3.5]
+    end
+
     # Spatial Weights from Matrix
     @testset "From Matrix " begin
         W = SpatialWeights([0 1 0; 1 0 1; 0 1 0])

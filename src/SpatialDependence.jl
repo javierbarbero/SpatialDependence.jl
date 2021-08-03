@@ -38,6 +38,8 @@ module SpatialDependence
         slag,
         sparse,
         reggeomlattice,
+        meancenter,
+        centroid,
 
         # Spatial autocorrelation
         AbstractGlobalSpatialAutocorrelation,
@@ -92,6 +94,7 @@ module SpatialDependence
     include("sweights/knearneigh.jl")
     include("sweights/polyneigh.jl")
     include("sweights/lattice.jl")
+    include("sweights/centroid.jl")
 
     include("slag.jl")
 

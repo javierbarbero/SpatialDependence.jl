@@ -67,6 +67,24 @@ The `knearneigh` function can also be used with two vectors of coordinates:
 W = knearneigh(boston.x, boston.y, k = 5)
 ```
 
+## Polygon centroids
+
+Polygon centroids and mean centers are computed with the `centroid` and `meancenter` functions.
+```@example polyW
+cx, cy = centroid(guerry.geometry);
+nothing # hide
+```
+
+```@example polyW
+cmx, cmy = meancenter(guerry.geometry);
+nothing # hide
+```
+
+Polygon centroids can be used to calculate neighbors based on distance thresholds or k nearest neighbors.
+```@example polyW
+knearneigh(cx, cy, k = 5)
+```
+
 ## Spatial Weights from a Matrix
 
 It is possible to create a spatial weights object by supplying a square Matrix. All values that are different from 0 will be neighbors. 
@@ -82,7 +100,7 @@ W = SpatialWeights([0 1 0; 1 0 1; 0 1 0], standardize = false)
 nothing # hide
 ```
 
-## Spatial Matrix transformation
+## Spatial Weights transformation
 
 By default, Spatial weight objects are row-standardized, with rows summing 1. It is possible to specify a different transformation with the `wtransform!` and `wtransform` functions. `wtransform!` applies an in-place transformation to the spatial weights object. In contrast,`wtransform` returns a transformed copy of the spatial weights object.
 
@@ -101,7 +119,7 @@ wtransform!(W, :binary)
 Wbin = wtransform(W, :binary)
 ```
 
-## Spatial Matrix information
+## Spatial Weights information
 
 There is a set of commands to obtain information about spatial weights objects.
 

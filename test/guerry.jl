@@ -45,6 +45,25 @@
 
     @test_nowarn show(IOBuffer(), cguerry)
 
+    # Polygon mean center
+    cx, cy = meancenter(guerry.geometry)
+    @test cx[1] ≈ 836732.867469879565760 atol = 1e-5
+    @test cy[1] ≈ 2125844.293172690551728 atol = 1e-5
+    @test cx[50] ≈ 814647.356215213309042 atol = 1e-5
+    @test cy[50] ≈ 2350156.217068645637482 atol = 1e-5
+
+    # Polygon centroid
+    cx, cy = centroid(guerry.geometry)
+    @test cx[1] ≈ 832852.278780025895685 atol = 1e-5
+    @test cy[1] ≈ 2126600.575969800818712 atol = 1e-5
+    @test cx[50] ≈ 815193.599669872317463 atol = 1e-5
+    @test cy[50] ≈ 2349544.092820507008582 atol = 1e-5
+
+    # Moran with 5 k nearest neighbors
+    Wk5 = knearneigh(cx, cy, k = 5)
+    morank5 = moran(guerry.Litercy, Wk5)
+    @test score(morank5) ≈ 0.678857 atol = 1e-5
+
     # ----------------
     #  Plot Recipes
     # ----------------
