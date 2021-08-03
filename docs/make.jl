@@ -31,6 +31,7 @@ makedocs(;
         "Spatial Lag" => "spatiallag.md",        
         "Global Spatial Autocorrelation" => "gspatialautocorrelation.md",
         "Choropleth Maps" => "choropleth.md",
+        "Parallel Computing" => "parallelcomputing.md",
         "API" => "api.md"
     ],
 )

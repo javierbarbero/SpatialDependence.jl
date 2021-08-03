@@ -18,7 +18,7 @@ Compute the Geary's c test of global spatial autocorrelation.
 - `permutations=9999`: number of permutations for the randomization test.
 - `rng=default_rng()`: random number generator for the randomization test.
 """
-function geary(x::Vector{T} where T<:Real, W::SpatialWeights; permutations::Int = 9999,
+function geary(x::AbstractVector{T} where T<:Real, W::SpatialWeights; permutations::Int = 9999,
     rng::AbstractRNG = default_rng())::GlobalGeary
 
     n = length(x)
@@ -27,7 +27,7 @@ function geary(x::Vector{T} where T<:Real, W::SpatialWeights; permutations::Int 
     denominator = sum( (z .- mean(z)).^2 )
 
     # Auxiliar function to calculate Geary's C
-    function geary_calc(z::Vector, W::SpatialWeights)::Float64
+    function geary_calc(z::AbstractVector, W::SpatialWeights)::Float64
         numerator = 0.0       
         for i in 1:n
             numerator += sum( weights(W, i) .* (z[i] .- z[neighbors(W, i)]).^2 )
@@ -39,12 +39,26 @@ function geary(x::Vector{T} where T<:Real, W::SpatialWeights; permutations::Int 
     C = geary_calc(z, W)
     EC = 1.0
 
-    # Randomization
+    # Build permutations array
+    Zi = Array{Float64}(undef, n, permutations)
+    for i in 1:permutations
+        Zi[:,i] = shuffle(rng, z)
+    end
+
+    # Calculate Geary's c for all the permutations
+    Cperms = zeros(permutations)
+    Threads.@threads for i in 1:permutations
+        Cperms[i] = geary_calc(view(Zi, :, i), W)
+    end
+
+    #=
+        # Randomization
     Cperms = zeros(permutations)
     for i in 1:permutations
         zi = shuffle(rng, z)
         Cperms[i] = geary_calc(zi, W)
     end
+    =#
 
     larger = sum(Cperms .>= C)
     if (permutations - larger) < larger 

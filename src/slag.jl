@@ -4,17 +4,17 @@
     slag(W, x)
 Calculate the spatial lag of `x` using the spatial weights `W`.
 """
-function slag(W::SpatialWeights, x::Vector{T} where T<:Real)::Vector{Real}
+function slag(W::SpatialWeights, x::AbstractVector{T} where T<:Real)::Vector{Real}
     n = W.n
     nx = length(x)
 
     n == nx || throw(DimensionMismatch("dimensions must match: W has ($(n)), x has ($nx)"))
         
     sx = zeros(n)    
-    for i in 1:n
-        @inbounds ni = length(W.neighs[i])
+    @inbounds @simd for i in 1:n
+        ni = length(W.neighs[i])
         for j in 1:ni
-            @inbounds sx[i] = sx[i] + W.weights[i][j] * x[W.neighs[i][j]]
+            sx[i] = sx[i] + W.weights[i][j] * x[W.neighs[i][j]]
         end
     end
     

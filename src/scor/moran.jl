@@ -18,7 +18,7 @@ Compute the  Moran's I test of global spatial autocorrelation.
 - `permutations=9999`: number of permutations for the randomization test.
 - `rng=default_rng()`: random number generator for the randomization test.
 """
-function moran(x::Vector{T} where T<:Real, W::SpatialWeights; permutations::Int = 9999,
+function moran(x::AbstractVector{T} where T<:Real, W::SpatialWeights; permutations::Int = 9999,
     rng::AbstractRNG = default_rng())::GlobalMoran
 
     n = length(x)
@@ -27,7 +27,7 @@ function moran(x::Vector{T} where T<:Real, W::SpatialWeights; permutations::Int 
     S0 = sum(sum.(W.weights::Vector{Vector{Float64}}))
 
     # Auxiliar function to calculate Moran's I
-    function moran_calc(z::Vector, W::SpatialWeights)::Float64
+    function moran_calc(z::AbstractVector, W::SpatialWeights)::Float64
         Wz = slag(W, z)
         return (sum(Wz .* z) / S0) / (sum(z .* z) / n)
     end
@@ -36,11 +36,16 @@ function moran(x::Vector{T} where T<:Real, W::SpatialWeights; permutations::Int 
     I = moran_calc(z, W)
     EI = -1.0 / (n - 1)
 
-    # Randomization
-    Iperms = zeros(permutations)
+    # Build permutations array
+    Zi = Array{Float64}(undef, n, permutations)
     for i in 1:permutations
-        zi = shuffle(rng, z)
-        Iperms[i] = moran_calc(zi, W)
+        Zi[:,i] = shuffle(rng, z)
+    end
+
+    # Calculate Moran's I for all the permutations
+    Iperms = zeros(permutations)
+    Threads.@threads for i in 1:permutations
+        Iperms[i] = moran_calc(view(Zi, :, i), W)
     end
 
     larger = sum(Iperms .>= I)

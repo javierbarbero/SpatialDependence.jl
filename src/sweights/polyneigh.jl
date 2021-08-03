@@ -92,7 +92,7 @@ function polyneigh(P::Vector{T} where T <:Union{Missing,AbstractPolygon,Abstract
     BBpols = sortslices(BBpols, dims=1)
             
     candidates = copy.(fill(Int[], n))
-    for i in 1:n-1
+    Threads.@threads for i in 1:n-1
         for j in (i+1):n
             if (BBpols[j,1] <= BBpols[i,3]) && # xmin[j] <= xmax[i]
                 (BBpols[j,2] <= BBpols[i,4]) && # ymin[j] <= ymax[i]
@@ -111,19 +111,29 @@ function polyneigh(P::Vector{T} where T <:Union{Missing,AbstractPolygon,Abstract
     if criterion == :Queen critthr = 1 end
     if criterion == :Rook  critthr = 2 end
 
-    for i in 1:n
+    # Use multithreading to calculate polygons hits
+    neighssingle = copy.(fill(Int[], n))
+    Threads.@threads for i in 1:n
         @inbounds for j in candidates[i]
             p1 = [x[i], y[i]]
             p2 = [x[j], y[j]]
             polhits = _hits(p1, p2, critthr, tol)
             
             if polhits  
-                push!(neighs[i], j) 
-                push!(neighs[j], i)                
-                nneighs[i] += 1
-                nneighs[j] += 1
-              end
+                push!(neighssingle[i], j) 
+            end
         end        
+    end
+    
+    # Makes neighbors bilateral
+    for i in 1:n
+        for j in neighssingle[i]
+            push!(neighs[i], j)
+            push!(neighs[j], i)
+
+            nneighs[i] += 1
+            nneighs[j] += 1
+        end
     end
 
     # Sort neighbours lists and compute weights
