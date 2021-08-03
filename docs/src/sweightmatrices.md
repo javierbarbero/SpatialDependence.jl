@@ -150,6 +150,15 @@ The function `nobs` returns the number of observations in the spatial weights ob
 
 Spatial weights objects implement the following methods to obtain descriptive statistics of the number of neighbors: `minimum`, `maximum`, `mean`, `median`.
 
+## Connectivity Histogram
+
+The `plot` function with a spatial weights object plots a connectivity histogram for the number of neighbors.
+
+```@example polyW
+plot(W)
+```
+
+
 ## Convert to other objects
 
 Spatial weights objects can be converted to a Matrix using the `Matrix` constructor:

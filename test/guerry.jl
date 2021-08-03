@@ -68,6 +68,9 @@
     #  Plot Recipes
     # ----------------
 
+    # Connectivity histogram
+    @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), W)
+
     # Test Moran's I distribution
     @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), mguerry)
 

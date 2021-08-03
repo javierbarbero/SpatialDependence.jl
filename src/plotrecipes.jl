@@ -1,5 +1,13 @@
 # Plot recipes
 
+# Recipe for Connectivity Histogram (Cardinality Histogram)
+@recipe function f(W::SpatialWeights)
+    xguide --> "Number of Neighbors"
+    legend --> false
+    seriestype --> :histogram
+    cardinalities(W)
+end
+
 # Recipe for Moran plot
 @recipe function f(x::Vector{Float64}, W::SpatialWeights)
 
