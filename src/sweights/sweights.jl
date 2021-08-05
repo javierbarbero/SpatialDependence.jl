@@ -169,12 +169,12 @@ end
 
 function Base.show(io::IO, W::SpatialWeights)
 
-    print(io, "Spatial Weights object \n")
+    print(io, "Spatial Weights \n")
     print(io, "Observations: ", nobs(W), " \n")    
     print(io, "Transformation: ", wtransformation(W), "\n")
-    print(io, "Average number of neighbors: ", round(mean(W), digits = 4), "\n")
     print(io, "Minimum nunmber of neighbors: ", minimum(W), "\n")
     print(io, "Maximum nunmber of neighbors: ", maximum(W), "\n")
+    print(io, "Average number of neighbors: ", round(mean(W), digits = 4), "\n")
     print(io, "Median number of neighbors: ", median(W), "\n")
     print(io, "Islands (isloated): ", nislands(W), "\n")
     print(io, "Density: ", round(100 * sum(W.nneighs) / (W.n  * W.n), digits = 4), "% \n")

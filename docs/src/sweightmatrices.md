@@ -119,9 +119,18 @@ wtransform!(W, :binary)
 Wbin = wtransform(W, :binary)
 ```
 
+```@example polyW
+wtransform!(W, :row) # hide
+```
+
 ## Spatial Weights information
 
 There is a set of functions to obtain information about spatial weights objects.
+
+The function `nobs` returns the number of observations in the spatial weights object. 
+```@example polyW
+nobs(W)
+```
 
 The number of neighbors of each observation is returned with the `cardinalities` function:
 ```@example polyW
@@ -145,8 +154,6 @@ nislands(W)
 ```@example polyW
 islands(W)
 ```
-
-The function `nobs` returns the number of observations in the spatial weights object. 
 
 Spatial weights objects implement the following methods to obtain descriptive statistics of the number of neighbors: `minimum`, `maximum`, `mean`, `median`.
 

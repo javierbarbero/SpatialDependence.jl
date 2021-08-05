@@ -188,6 +188,8 @@ It is possible to change the **legend** position with the `legend` parameter. Po
 plot(guerry, :Litercy, Quantiles(), legend = :topleft)
 ```
 
+The legend's white background color can be removed by passing the argument `background_color_legend = nothing` and the black border with `foreground_color_legend = nothing`.
+
 **Color palette** is set by default to `:YlOrBr` for graduated maps, reverse `:RdBu` for statistical maps, and  `:Paired` for unique values maps. Users can change the palette with the `palette` parameter and reverse the colors by setting `rev` to `true`. A list of the color shcemes available in the Plots.jl package can be found [here](http://docs.juliaplots.org/latest/generated/colorschemes/#Pre-defined-ColorSchemes).
 
 ```@example choropleth

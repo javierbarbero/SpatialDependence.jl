@@ -4,7 +4,7 @@ CurrentModule = SpatialDependence
 
 # SpatialDependence
 
-The package [SpatialDependence.jl](https://github.com/javierbarbero/SpatialDependence.jl) is a Julia package for spatial dependence (spatial autocorrelation), spatial weights matrices, and exploratory spatial data analysis (ESDA).
+The package [SpatialDependence.jl](https://github.com/javierbarbero/SpatialDependence.jl) is a Julia package for exploratory spatial data analysis (ESDA), including functions for spatial weights matrices creation, testing for spatial dependence (spatial autocorrelation), and choropleth mapping.
 
 ## Installation
 
@@ -15,7 +15,7 @@ julia> using Pkg; Pkg.add("SpatialDependence")
 
 ## Example
 
-The following example reads Guerry's Moral statistics of France data and builds a spatial contiguity matrix from the polygons. The spatial weights matrix is row standardized, and the Morans' I index is calculated:
+The following example reads Guerry's Moral statistics of France data, builds a spatial contiguity matrix from the polygons, and calculates the Morans' I global spatial autocorrelation statistic:
 
 ```@example intro
 # Load packages
@@ -49,7 +49,7 @@ plot(guerry.Litercy, W, xlabel = "Litercy")
 ## Documentation index
 
 ```@contents
-Pages = ["sweightmatrices.md", "spatiallag.md", "gspatialautocorrelation.md", "choropleth.md", "parallelcomputing.md"]
+Pages = ["sweightmatrices.md", "spatiallag.md", "gspatialautocorrelation.md", "choropleth.md", "parallelcomputing.md", "bibliography.md"]
 Depth = 2
 ```
 
