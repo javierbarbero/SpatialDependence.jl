@@ -1,6 +1,6 @@
 # SpatialDependence.jl
 
-A Julia package for spatial dependence (spatial autocorrelation), spatial weights matrices, and exploratory spatial data analysis (ESDA).
+A Julia package for exploratory spatial data analysis (ESDA), including functions for spatial weights matrices creation, testing for spatial dependence (spatial autocorrelation), and choropleth maps.
 
 | Documentation | Build Status      | Coverage    |
 |:-------------:|:-----------------:|:-----------:|
@@ -18,6 +18,41 @@ A Julia package for spatial dependence (spatial autocorrelation), spatial weight
 [codecov-img]: https://codecov.io/gh/javierbarbero/SpatialDependence.jl/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/javierbarbero/SpatialDependence.jl
 
-The package **SpatialDependence.jl** contains functions to create and handle spatial weights matrices from polygon and point geometries. It also has functions for calculating spatial lags and indicators of spatial autocorrelation.
+The package **SpatialDependence.jl** contains functions to create and handle spatial weights matrices from polygon and point geometries. It also has functions for calculating spatial lags, test for spatial autocorrelation, and plotting choropleth maps.
 
-The package is currently in an early stage and under development. 
+The package takes advantage of Julia multi-threading features to increase performance if Julia is started with multiple threads.
+
+See the last stable version [documentation][docs-stable-url] to learn how to use it.
+
+The package is currently under heavy development, with more functionality coming soon.
+
+## Installation
+
+The package can be installed with the Julia package manager:
+```julia
+julia> using Pkg; Pkg.add("SpatialDependence")
+```
+
+## Main functionality
+
+**Spatial Weights Matrices**
+
+- Polygon contiguity: Queen and Rook.
+- Points distance threshold.
+- Points K nearest neighbors.
+
+**Global Spatial Autocorrelation**
+
+- Moran's I.
+- Geary's c.
+
+**Choropleth Maps**
+
+- Graduated: Equal Intervals, Quantiles, Natural Breaks, Custom Breaks.
+- Statistical: Box Plot, Standard Deviation, Percentiles.
+- Unique Values.
+- Co-location.
+
+## Author
+
+SpatialDependence.jl is being developed by [Javier Barbero](http://www.javierbarbero.net).
