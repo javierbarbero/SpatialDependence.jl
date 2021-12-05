@@ -49,6 +49,9 @@ function moran(x::AbstractVector{T} where T<:Real, W::SpatialWeights; permutatio
     end
 
     larger = sum(Iperms .>= I)
+    if (permutations - larger) < larger 
+        larger = permutations - larger
+    end
     p = (larger + 1) / (permutations + 1)
     
     Ipermsstd = std(Iperms, corrected = false)
