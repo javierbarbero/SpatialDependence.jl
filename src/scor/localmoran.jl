@@ -1,4 +1,4 @@
-# Local Moran's I test of Spatial Autocorrelation
+# Local Moran test of Spatial Autocorrelation
 struct LocalMoran <: AbstractLocalSpatialAutocorrelation
     n::Int
     I::Vector{Float64}
@@ -12,7 +12,7 @@ end
 
 """
     localmoran(x, W)
-Compute the  Local Moran's I test of spatial autocorrelation.
+Compute the  Local Moran test of spatial autocorrelation.
 
 # Optional Arguments
 - `permutations=9999`: number of permutations for the randomization test.
@@ -33,12 +33,12 @@ function localmoran(x::AbstractVector{T} where T<:Real, W::SpatialWeights; permu
         m2 = m2 ./ n
     end
 
-    # Auxiliar function to calculate Local Moran's I
+    # Auxiliar function to calculate Local Moran
     function lmoran_calc(zi::Number, wi::AbstractVector, zneighi::AbstractVector)::Float64
         return (zi / m2) .* sum(wi .* zneighi)
     end
     
-    # Local Morans's I
+    # Local Morans
     # I = (z / m2) .* Wz
     I = zeros(n)
     for i in 1:n
@@ -54,10 +54,9 @@ function localmoran(x::AbstractVector{T} where T<:Real, W::SpatialWeights; permu
         Cperms[i,:] = sample(rng, samplevec, maxni, replace = false)
     end
     
-    # Calculate Moran's I for all the permutations
+    # Calculate Moran for all the permutations
     Iperms = zeros(n, permutations)
 
-    # Threads.@threads 
     Threads.@threads for i in 1:n
         bnoi = ones(Bool, n)
         bnoi[i] = false
@@ -121,7 +120,7 @@ pvalue(x::LocalMoran) = x.p;
 
 assignments(x::LocalMoran) = x.q;
 
-testname(::LocalMoran) = "Local Moran's I";
+testname(::LocalMoran) = "Local Moran";
 
 labelsorder(::LocalMoran) = [:ns; :HH; :LL; :LH; :HL];
 

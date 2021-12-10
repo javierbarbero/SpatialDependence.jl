@@ -20,15 +20,15 @@ W = polyneigh(guerry)
 nothing # hide
 ```
 
-## Local Moran's I
+## Local Moran
 
-Local Moran's I (Anselin, 1995) is the most used local spatial autocorrelation statistic. It is computed as:
+Local Moran (Anselin, 1995) is the most used local spatial autocorrelation statistic. It is computed as:
 ```math
 I = \frac{z_i}{m_2} \sum_{j}w_{ij}z_{j}
 ```
 where $z$ is the variable of interest in deviations from the mean, and $m_2 = \sum_{i}z_i / (n - 1)$ or  $m_2 = \sum_{i}z_i / n$ is the scaling factor.
 
-Local Moran's I can be computed with the `localmoran` function. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproduciibility, it is possible to specify a custom random number generator with the `rng` optional parameter. If `corrected` is set to `false` the scaling factor is divided by $n$ instead of $n - 1$.
+Local Moran I can be computed with the `localmoran` function. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproduciibility, it is possible to specify a custom random number generator with the `rng` optional parameter. If `corrected` is set to `false` the scaling factor is divided by $n$ instead of $n - 1$.
 ```@example lscor
 lmguerry = localmoran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
 ```
@@ -58,4 +58,16 @@ As multiple tests are performed on the same dataset, the p-values suffer from th
 
 ```@example lscor
 issignificant(lmguerry, 0.05, adjust = :fdr)
+```
+
+## LISA Cluster Map
+
+A cluster map with the significant locations can be plotted with the `plot` function if the [Plots.jl](http://docs.juliaplots.org) package is loaded:
+```@example lscor
+plot(guerry, lmguerry)
+```
+
+The threshold significance value and the adjustment can also be set when plotting a cluster map with the `sig` and `adjust` parameters:
+```@example lscor
+plot(guerry, lmguerry, sig = 0.05, adjust = :fdr)
 ```

@@ -46,6 +46,11 @@ julia> using Pkg; Pkg.add("SpatialDependence")
 - Moran's I.
 - Geary's c.
 
+**Local Spatial Autocorrelation**
+
+- Local Moran.
+- LISA Cluster Map.
+
 **Choropleth Maps**
 
 - Graduated: Equal Intervals, Quantiles, Natural Breaks, Custom Breaks.

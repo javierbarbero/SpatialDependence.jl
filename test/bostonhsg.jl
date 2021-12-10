@@ -76,6 +76,9 @@
     @test zscore(cboston) ≈ -25.249835 atol = 1e-5
     @test pvalue(cboston) ≈ 0.0001 atol = 1e-5
 
+    # Local Moran
+    lmboston = localmoran(boston.MEDV, Wknn10, rng = StableRNG(1234567), permutations = 9999)
+
     # ----------------
     #  Plot Recipes
     # ----------------
@@ -86,5 +89,9 @@
     # Test Moran's Plot
     @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), boston.MEDV, Wknn10)
     @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}([(:standardize, false)]), boston.MEDV, Wknn10)
+
+    # Test LISA Cluster Map with points
+    @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), boston, lmboston)
+    @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), boston.geometry, lmboston)
 
 end

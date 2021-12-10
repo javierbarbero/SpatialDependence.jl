@@ -54,6 +54,8 @@ end
         length(P) == length(cvar) || throw(ArgumentError("dimensions must match: A has ($(length(P))), colorvar has ($(length(cvar)))"))
     end
 
+    gtype = geotype(P[1])
+
     # Default color palette
     defpalette, defrev = defaultpalette(mcr)
 
@@ -95,8 +97,7 @@ end
 
     # Get colors from pallete
     mappal = palette(plotattributes[:color_palette], k - isCoLocation, rev = rev)
-    gtype = geotype(P[1])
-
+    
     # For each category in the map
     for i in 1:k
 
@@ -140,6 +141,105 @@ end
             @series begin
                 seriestype := :scatter
                 seriescolor := catcolor
+                label := labels[i]
+                x, y
+            end
+        end
+    end
+
+end
+
+# LISA Cluster Map
+@recipe function f(A::Any, lisavar::AbstractLocalSpatialAutocorrelation)
+
+    if istable(A)
+        # If Table or DataFrame
+        (:geometry in propertynames(A)) || throw(ArgumentError("table does not have :geometry information"))
+        P = A.geometry
+    else
+        P = A
+    end
+
+    # Check is geometry
+    isa(P, Vector{<:Union{Missing, AbstractGeometry}}) || throw(ArgumentError("invalid geometry"))
+
+    gtype = geotype(P[1])
+
+    # Get plot attributes
+    counts = get(plotattributes, :counts, true)
+    pthreshold = get(plotattributes, :sig, 0.05)
+    adjust = get(plotattributes, :adjust, :none)
+
+    # Classify values and get labels
+    q = deepcopy(lisavar.q)
+
+    q[.! issignificant(lisavar, pthreshold, adjust = adjust)] .= :ns
+
+    mc = mapclassify(Unique(labelsorder(lisavar)), q)
+    labels = maplabels(mc, counts = counts)
+
+    k = length(mc)
+    group = assignments(mc)
+    grouplabs = mc.grouplabs
+
+    # Default attributes for maps
+    legend --> true
+    grid --> false
+    showaxis --> false
+    ticks --> false
+    aspect_ratio --> :equal    
+
+    # For each category in the map
+    for i in 1:k
+
+        # Subset of geometries for the category
+        subset = P[group .== i]
+
+        if grouplabs[i] == "ns"
+            catcolor = :lightgrey
+            alpha = 0.4
+        elseif grouplabs[i] == "HH"
+            catcolor = :red
+            alpha = 1
+        elseif grouplabs[i] == "LL"
+            catcolor = :blue
+            alpha = 1
+        elseif grouplabs[i] == "LH"
+            catcolor = :blue
+            alpha = 0.4
+        elseif grouplabs[i] == "HL"
+            catcolor = :red
+            alpha = 0.4 
+        end
+        
+        # If empty subset, plot a NaN point to display the text in the legend but not the color
+        if length(subset) == 0
+            @series begin
+                seriestype := :scatter
+                seriescolor := catcolor
+                alpha := alpha
+                label := labels[i]
+                [NaN], [NaN]                
+            end
+            continue
+        end
+
+        # Get shape map coordinates and plot polygon or point
+        x, y = mapshapecoords(P[group .== i])
+
+        if gtype == :Polygon || gtype == :MultiPolygon
+            @series begin
+                seriestype := :shape
+                seriescolor := catcolor
+                alpha := alpha
+                label := labels[i]                
+                (x, y)
+            end
+        elseif gtype == :Point
+            @series begin
+                seriestype := :scatter
+                seriescolor := catcolor
+                alpha := alpha
                 label := labels[i]
                 x, y
             end

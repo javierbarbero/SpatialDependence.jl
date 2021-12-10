@@ -1,5 +1,8 @@
 # Map classificator for Unique values
-struct Unique <: AbstractUniqueMapClassificator end
+struct Unique <: AbstractUniqueMapClassificator 
+    uniq::Union{Vector{String}, Vector{Symbol}, Nothing}
+    Unique(uniq::Union{Vector{String}, Vector{Symbol}, Nothing} = nothing) = return new(uniq);
+end
 
 # Structure for Unique Values  Map Classification
 struct UniqueMapClassification <: AbstractMapClassification
@@ -12,7 +15,11 @@ end
 
 function mapclassify(mcr::AbstractUniqueMapClassificator, x::AbstractVector)::UniqueMapClassification  
 
-    uniq = unique(x)
+    if isnothing(mcr.uniq)
+        uniq = unique(x)
+    else
+        uniq = mcr.uniq
+    end
     k = length(uniq)
     group = zeros(Int, length(x))
     ngroup = zeros(Int, k)

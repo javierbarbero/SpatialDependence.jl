@@ -104,8 +104,12 @@
         @test count(issignificant(lmguerry, 0.05, adjust = :bonferroni)) == 6
         @test count(issignificant(lmguerry, 0.05, adjust = :fdr)) == 23
 
-        @test SpatialDependence.testname(lmguerry) == "Local Moran's I"
+        @test SpatialDependence.testname(lmguerry) == "Local Moran"
         @test_nowarn show(IOBuffer(), lmguerry)
+
+        # Test LISA Cluster Map
+        @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), guerry, lmguerry)
+        @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), guerry.geometry, lmguerry)
 
         # Test dividing by n instead of (n - 1)
         lmguerry = localmoran(guerry.Litercy, W, rng = StableRNG(1234567), permutations = 0, corrected = false)
