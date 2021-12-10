@@ -47,7 +47,7 @@ function Base.show(io::IO, x::AbstractLocalSpatialAutocorrelation)
         if labels[i] == :ns
             countcat[i] = count(.! issig)
         else
-            countcat[i] = count(issig .&& (q .== labels[i]))
+            countcat[i] = count(issig .& (q .== labels[i]))
         end
     end
 
