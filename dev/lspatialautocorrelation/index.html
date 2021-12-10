@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Local Spatial Autocorrelation · SpatialDependence.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link rel="canonical" href="https://javierbarbero.github.io/SpatialDependence.jl/lspatialautocorrelation/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">SpatialDependence.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../sweightmatrices/">Spatial Weight Matrices</a></li><li><a class="tocitem" href="../spatiallag/">Spatial Lag</a></li><li><a class="tocitem" href="../gspatialautocorrelation/">Global Spatial Autocorrelation</a></li><li class="is-active"><a class="tocitem" href>Local Spatial Autocorrelation</a><ul class="internal"><li><a class="tocitem" href="#Local-Moran&#39;s-I"><span>Local Moran&#39;s I</span></a></li><li><a class="tocitem" href="#Significance"><span>Significance</span></a></li></ul></li><li><a class="tocitem" href="../choropleth/">Choropleth Maps</a></li><li><a class="tocitem" href="../parallelcomputing/">Parallel Computing</a></li><li><a class="tocitem" href="../bibliography/">Bibliography</a></li><li><a class="tocitem" href="../api/">API</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Local Spatial Autocorrelation</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Local Spatial Autocorrelation</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/javierbarbero/SpatialDependence.jl/blob/master/docs/src/lspatialautocorrelation.md#" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Local-Spatial-Autocorrelation"><a class="docs-heading-anchor" href="#Local-Spatial-Autocorrelation">Local Spatial Autocorrelation</a><a id="Local-Spatial-Autocorrelation-1"></a><a class="docs-heading-anchor-permalink" href="#Local-Spatial-Autocorrelation" title="Permalink"></a></h1><p>Local spatial autocorrelation statistics are used to discover clusters (hot spots or cold spots) and spatial outliers. Local Indicators of Spatial Association (LISA), introduced by Anselin (1995), are local spatial statistics that provide a statistic for each location and assess its contribution to the corresponding global spatial autocorrelation statistic.</p><p>Inference is performed through a computational conditional permutation approach by randomly reshuffling the values of the variable to different locations while the value of the observation under consideration is held fixed at its location. The observed statistic for each location is compared to a reference distribution under the null hypothesis of spatial randomness.</p><p>All the examples on this page assume that the Guerry dataset is loaded and a polygon contiguity spatial weights object has been built and row-standardized.</p><pre><code class="language-julia hljs">using SpatialDatasets
+using SpatialDependence
+using StableRNGs
+using Plots
+
+guerry = sdataset(&quot;Guerry&quot;)
+W = polyneigh(guerry)</code></pre><h2 id="Local-Moran&#39;s-I"><a class="docs-heading-anchor" href="#Local-Moran&#39;s-I">Local Moran&#39;s I</a><a id="Local-Moran&#39;s-I-1"></a><a class="docs-heading-anchor-permalink" href="#Local-Moran&#39;s-I" title="Permalink"></a></h2><p>Local Moran&#39;s I (Anselin, 1995) is the most used local spatial autocorrelation statistic. It is computed as:</p><p class="math-container">\[I = \frac{z_i}{m_2} \sum_{j}w_{ij}z_{j}\]</p><p>where <span>$z$</span> is the variable of interest in deviations from the mean, and <span>$m_2 = \sum_{i}z_i / (n - 1)$</span> or  <span>$m_2 = \sum_{i}z_i / n$</span> is the scaling factor.</p><p>Local Moran&#39;s I can be computed with the <code>localmoran</code> function. By default, <span>$9,999$</span> permutations are calculated for the inference. It is possible to specify a different number of permutations with the <code>permutations</code> optional parameter. For reproduciibility, it is possible to specify a custom random number generator with the <code>rng</code> optional parameter. If <code>corrected</code> is set to <code>false</code> the scaling factor is divided by <span>$n$</span> instead of <span>$n - 1$</span>.</p><pre><code class="language-julia hljs">lmguerry = localmoran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Local Moran&#39;s I test of Spatial Autocorrelation
+--------------------------------------------
+
+Randomization test with 9999 permutations.
+Interesting locations at 0.05 significance level:
+       High-High: 10
+         Low-Low: 13
+        Low-High: 0
+        High-Low: 0
+</code></pre><p>In the Local Moran, observations are classified in four categories, depending on the value of the attribute and the value of their neighbors with respect to the mean:</p><table><tr><th style="text-align: left">Code</th><th style="text-align: left">Category</th><th style="text-align: left">Cluster or Outliers</th><th style="text-align: left">Interpretation</th></tr><tr><td style="text-align: left"><code>:HH</code></td><td style="text-align: left">High-High</td><td style="text-align: left">Cluster: hot spot</td><td style="text-align: left">High values surrounded by high values</td></tr><tr><td style="text-align: left"><code>:LL</code></td><td style="text-align: left">Low-Low</td><td style="text-align: left">Cluster: cold spot</td><td style="text-align: left">Low values surrounded by low values</td></tr><tr><td style="text-align: left"><code>:LH</code></td><td style="text-align: left">Low-High</td><td style="text-align: left">Outlier: doughnut</td><td style="text-align: left">High values surrounded by low values</td></tr><tr><td style="text-align: left"><code>:HL</code></td><td style="text-align: left">High-Low</td><td style="text-align: left">Outlier: diamond</td><td style="text-align: left">Low values surrounded by high values</td></tr></table><p>The category for whicheach observation is assigned can be retrieved with the <code>assignments</code> function:</p><pre><code class="language-julia hljs">assignments(lmguerry)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">85-element Vector{Symbol}:
+ :LH
+ :HH
+ :LL
+ :HH
+ :HL
+ :LL
+ :HH
+ :LL
+ :HH
+ :LL
+ ⋮
+ :LL
+ :LL
+ :LH
+ :LL
+ :LL
+ :LL
+ :LL
+ :HH
+ :HH</code></pre><h2 id="Significance"><a class="docs-heading-anchor" href="#Significance">Significance</a><a id="Significance-1"></a><a class="docs-heading-anchor-permalink" href="#Significance" title="Permalink"></a></h2><p>The conditional randomization procedure returns a pseudo p-value that can be used to assed the significance of the identified clusters and spatial outliers. The function <code>issignificant</code> returns a vector of boolean values indicating if the local statistics are significant at the desired threshold level:</p><pre><code class="language-julia hljs">issignificant(lmguerry, 0.05)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">85-element Vector{Bool}:
+ 0
+ 1
+ 1
+ 0
+ 0
+ 0
+ 1
+ 0
+ 1
+ 0
+ ⋮
+ 0
+ 0
+ 0
+ 0
+ 0
+ 1
+ 1
+ 1
+ 0</code></pre><p>As multiple tests are performed on the same dataset, the p-values suffer from the problem of multiple comparisons, leading to many false positives (exceeding the nominal Type I error rate). Multiple solutions have been suggested in the literature to address this issue. Some of them are implemented through the <code>adjust</code> parameter. Set the parameter to <code>:bonferroni</code> for the conservative Bonferroni approach. For the <em>False Discovery Rate</em>, set the parameter to <code>:fdr</code>. </p><pre><code class="language-julia hljs">issignificant(lmguerry, 0.05, adjust = :fdr)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">85-element Vector{Bool}:
+ 0
+ 0
+ 1
+ 0
+ 0
+ 0
+ 1
+ 0
+ 1
+ 0
+ ⋮
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 1
+ 1
+ 0</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../gspatialautocorrelation/">« Global Spatial Autocorrelation</a><a class="docs-footer-nextpage" href="../choropleth/">Choropleth Maps »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.10 on <span class="colophon-date" title="Friday 10 December 2021 16:30">Friday 10 December 2021</span>. Using Julia version 1.7.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
