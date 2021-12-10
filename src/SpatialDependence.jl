@@ -15,7 +15,7 @@ module SpatialDependence
 
     import Base: length
     import SparseArrays: SparseMatrixCSC, sparse
-    import StatsBase: counts, levels, maximum, median, minimum, nobs, percentile, score, standardize, weights, zscore, ZScoreTransform
+    import StatsBase: counts, levels, maximum, median, minimum, nobs, percentile, sample, score, standardize, weights, zscore, ZScoreTransform
     import Statistics: mean, median, std, quantile
     
     export 
@@ -51,6 +51,10 @@ module SpatialDependence
         score,
         scoreperms,
         pvalue,
+        AbstractLocalSpatialAutocorrelation,
+        LocalMoran,
+        localmoran,
+        issignificant,
         
         # Re-export from Statistics
         nobs,
@@ -102,6 +106,8 @@ module SpatialDependence
     include("scor/global.jl")
     include("scor/moran.jl")
     include("scor/geary.jl")
+    include("scor/local.jl")
+    include("scor/localmoran.jl")
 
     include("maps/classification.jl")
     include("maps/graduated.jl")

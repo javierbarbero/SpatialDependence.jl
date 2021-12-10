@@ -49,7 +49,7 @@ plot(guerry.Litercy, W, xlabel = "Litercy")
 ## Documentation index
 
 ```@contents
-Pages = ["sweightmatrices.md", "spatiallag.md", "gspatialautocorrelation.md", "choropleth.md", "parallelcomputing.md", "bibliography.md"]
+Pages = ["sweightmatrices.md", "spatiallag.md", "gspatialautocorrelation.md", "lspatialautocorrelation.md", "choropleth.md", "parallelcomputing.md", "bibliography.md"]
 Depth = 2
 ```
 

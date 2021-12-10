@@ -15,3 +15,4 @@ The following functions take advantage of multi-threading to increase their perf
 | Polygon contiguity | `polyneigh`   | Bouning box overlaps and polygon hits |
 | Global Moran's I   | `moran`       | Permutation test                      |
 | Global Geary's c   | `geary`       | Permutation test                      |
+| Local Moran's I    | `localmoran`  | Permutation test                      |

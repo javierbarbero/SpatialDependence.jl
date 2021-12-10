@@ -30,6 +30,7 @@ makedocs(;
         "Spatial Weight Matrices" => "sweightmatrices.md",
         "Spatial Lag" => "spatiallag.md",        
         "Global Spatial Autocorrelation" => "gspatialautocorrelation.md",
+        "Local Spatial Autocorrelation" => "lspatialautocorrelation.md",
         "Choropleth Maps" => "choropleth.md",
         "Parallel Computing" => "parallelcomputing.md",        
         "Bibliography" => "bibliography.md",
