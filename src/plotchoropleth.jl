@@ -198,19 +198,9 @@ end
         if grouplabs[i] == "ns"
             catcolor = :lightgrey
             alpha = 0.4
-        elseif grouplabs[i] == "HH"
-            catcolor = :red
-            alpha = 1
-        elseif grouplabs[i] == "LL"
-            catcolor = :blue
-            alpha = 1
-        elseif grouplabs[i] == "LH"
-            catcolor = :blue
-            alpha = 0.4
-        elseif grouplabs[i] == "HL"
-            catcolor = :red
-            alpha = 0.4 
         end
+
+        catcolor, alpha = labelcolor(lisavar, grouplabs[i] )
         
         # If empty subset, plot a NaN point to display the text in the legend but not the color
         if length(subset) == 0

@@ -24,11 +24,11 @@ nothing # hide
 
 Local Moran (Anselin, 1995) is the most used local spatial autocorrelation statistic. It is computed as:
 ```math
-I = \frac{z_i}{m_2} \sum_{j}w_{ij}z_{j}
+I_i = \frac{z_i}{m_2} \sum_{j}w_{ij}z_{j}
 ```
 where $z$ is the variable of interest in deviations from the mean, and $m_2 = \sum_{i}z_i / (n - 1)$ or  $m_2 = \sum_{i}z_i / n$ is the scaling factor.
 
-Local Moran I can be computed with the `localmoran` function. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproduciibility, it is possible to specify a custom random number generator with the `rng` optional parameter. If `corrected` is set to `false` the scaling factor is divided by $n$ instead of $n - 1$.
+Local Moran can be computed with the `localmoran` function. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproduciibility, it is possible to specify a custom random number generator with the `rng` optional parameter. If `corrected` is set to `false` the scaling factor is divided by $n$ instead of $n - 1$.
 ```@example lscor
 lmguerry = localmoran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
 ```
@@ -38,14 +38,48 @@ In the Local Moran, observations are classified in four categories, depending on
 | Code   | Category    | Cluster or Outliers | Interpretation                         |
 |:-------|:------------|:--------------------|:---------------------------------------|
 | `:HH`  | High-High   | Cluster: hot spot   | High values surrounded by high values  |
-| `:LL`  | Low-Low     | Cluster: cold spot  | Low values surrounded by low values    |
-| `:LH`  | Low-High    | Outlier: doughnut   | High values surrounded by low values   |
+| `:LL`  | Low-Low     | Cluster: cold spot  | Low values surrounded by low values    |
+| `:LH`  | Low-High    | Outlier: doughnut   | High values surrounded by low values   |
 | `:HL`  | High-Low    | Outlier: diamond    | Low values surrounded by high values   |
 
-The category for whicheach observation is assigned can be retrieved with the `assignments` function:
+The category to which each observation is assigned can be retrieved with the `assignments` function:
 ```@example lscor
 assignments(lmguerry)
 ```
+
+## Local Geary
+
+Local Geary (Anselin, 1995) is computed as:
+```math
+c_i = \frac{1}{m_2} \sum_{j}w_{ij}(z_{i} - z_{j})^2
+```
+where $z$ is the variable of interest in deviations from the mean, and $m_2 = \sum_{i}z_i / (n - 1)$ or  $m_2 = \sum_{i}z_i / n$ is the scaling factor.
+
+Local Geary can be computed with the `localgeary` function. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproduciibility, it is possible to specify a custom random number generator with the `rng` optional parameter. If `corrected` is set to `false` the scaling factor is divided by $n$ instead of $n - 1$.
+```@example lscor
+lcguerry = localgeary(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
+```
+
+In the Local Geary, observations are classified in two categories:
+
+| Code   | Category    | Interpretation                         |
+|:-------|:------------|:---------------------------------------|
+| `:P`   | Positive    | Positive spatial autocorrelation       |
+| `:N`   | Negative    | Negative spatial autocorrelation       |
+
+The category to which heach observation is assigned can be retrieved with the `assignments` function:
+```@example lscor
+assignments(lcguerry)
+```
+
+Alternatively, observations can be interpreted together with the quadrants of the moran scatterplot if the parameter `categories` is set to `:moran`:
+
+| Code   | Category       | Interpretation                         |
+|:-------|:---------------|:---------------------------------------|
+| `:HH`  | High-High      | High values surrounded by high values  |
+| `:LL`  | Low-Low        | Low values surrounded by low values    |
+| `:OP`  | Other Positive | Other positive spatial autocorrelation |
+| `:NE`  | Negative       | Negative spatial autocorrelation       |
 
 ## Significance
 

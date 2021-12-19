@@ -54,6 +54,8 @@ module SpatialDependence
         AbstractLocalSpatialAutocorrelation,
         LocalMoran,
         localmoran,
+        LocalGeary,
+        localgeary,
         issignificant,
         
         # Re-export from Statistics
@@ -108,6 +110,7 @@ module SpatialDependence
     include("scor/geary.jl")
     include("scor/local.jl")
     include("scor/localmoran.jl")
+    include("scor/localgeary.jl")
 
     include("maps/classification.jl")
     include("maps/graduated.jl")

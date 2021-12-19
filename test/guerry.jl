@@ -117,4 +117,50 @@
         @test score(lmguerry)[81:85] ≈ [0.274141; 0.610809; 1.506250; 2.170780; 0.205610] atol = 1e-5
     end
 
+    @testset "Local Geary" begin
+        lcguerry = localgeary(guerry.Litercy, W, rng = StableRNG(1234567), permutations = 9999)
+
+        @test score(lcguerry)[1:5] ≈ [1.191784; 0.275807; 0.439757; 0.949973; 3.134225] atol = 1e-5
+        @test score(lcguerry)[81:85] ≈ [0.272243; 0.325157; 0.446885; 0.20288; 0.734317] atol = 1e-5
+        @test size(scoreperms(lcguerry), 1) == 85
+        @test size(scoreperms(lcguerry), 2) == 9999
+        @test mean(lcguerry)[1:5] ≈ [1.013359; 1.468334; 3.269937; 1.157147; 3.95656] atol = 1e-5
+        @test mean(lcguerry)[81:85] ≈ [1.412199; 1.664964; 3.272061; 2.744478; 1.209385] atol = 1e-5
+        @test std(lcguerry)[1:5] ≈ [0.564736; 0.55419; 1.388559; 0.522587; 1.82078] atol = 1e-5
+        @test std(lcguerry)[81:85] ≈ [0.950857; 0.883169; 1.389196; 0.968423; 0.490151] atol = 1e-5
+        @test zscore(lcguerry)[1:5] ≈ [0.315944; -2.151836; -2.038214; -0.396441; -0.451638] atol = 1e-5
+        @test zscore(lcguerry)[81:85] ≈ [-1.198872; -1.517045; -2.033677; -2.624471; -0.969228] atol = 1e-5
+        @test pvalue(lcguerry)[1:5] ≈ [0.3506; 0.0036; 0.003; 0.373; 0.3455] atol = 1e-4   
+        @test pvalue(lcguerry)[81:85] ≈ [0.0722; 0.0325; 0.0031; 0.0002; 0.1712] atol = 1e-4   
+
+        @test assignments(lcguerry)[1:5] == [:N, :P, :P, :P, :P]
+        @test assignments(lcguerry)[81:85] == [:P, :P, :P, :P, :P]
+        @test count(issignificant(lcguerry, 0.05, adjust = :none)) == 49
+        @test count(issignificant(lcguerry, 0.01, adjust = :none)) == 29
+        @test count(issignificant(lcguerry, 0.05, adjust = :bonferroni)) == 9
+        @test count(issignificant(lcguerry, 0.05, adjust = :fdr)) == 40
+
+        @test SpatialDependence.testname(lcguerry) == "Local Geary"
+        @test_nowarn show(IOBuffer(), lcguerry)
+
+        # Test LISA Cluster Map
+        @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), guerry, lcguerry)
+        @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), guerry.geometry, lcguerry)
+
+        # Test :moran categories
+        lcguerry = localgeary(guerry.Litercy, W, rng = StableRNG(1234567), permutations = 9999, categories = :moran)
+        @test assignments(lcguerry)[1:5] == [:NE, :HH, :LL, :HH, :OP]
+        @test assignments(lcguerry)[81:85] == [:LL, :LL, :LL, :HH, :HH]
+        @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), guerry, lcguerry)
+
+        # Test :moran categories with the Donatn's variables to test the :NE label when plotting maps
+        lcguerry = localgeary(guerry.Donatns, W, rng = StableRNG(1234567), permutations = 9999, categories = :moran)
+        @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), guerry, lcguerry)
+
+        # Test dividing by n instead of (n - 1)
+        lcguerry = localgeary(guerry.Litercy, W, rng = StableRNG(1234567), permutations = 0, corrected = false)
+        @test score(lcguerry)[1:5] ≈ [1.205972; 0.279091; 0.444992; 0.961282; 3.171538] atol = 1e-5
+        @test score(lcguerry)[81:85] ≈ [0.275484; 0.329028; 0.452205; 0.205295; 0.743059] atol = 1e-5
+    end
+
 end

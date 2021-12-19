@@ -12,7 +12,7 @@ end
 
 """
     localmoran(x, W)
-Compute the  Local Moran test of spatial autocorrelation.
+Compute the Local Moran test of spatial autocorrelation.
 
 # Optional Arguments
 - `permutations=9999`: number of permutations for the randomization test.
@@ -34,44 +34,19 @@ function localmoran(x::AbstractVector{T} where T<:Real, W::SpatialWeights; permu
     end
 
     # Auxiliar function to calculate Local Moran
-    function lmoran_calc(zi::Number, wi::AbstractVector, zneighi::AbstractVector)::Float64
+    function localmoran_calc(zi::Number, wi::AbstractVector, zneighi::AbstractVector)::Float64
         return (zi / m2) .* sum(wi .* zneighi)
     end
     
-    # Local Morans
+    # Local Moran
     # I = (z / m2) .* Wz
     I = zeros(n)
     for i in 1:n
-        I[i] = lmoran_calc(z[i], weights(W, i), z[neighbors(W, i)]) 
+        I[i] = localmoran_calc(z[i], weights(W, i), z[neighbors(W, i)]) 
     end
 
-    # Build permutations array
-    ni = cardinalities(W)
-    maxni = maximum(ni)
-    Cperms = zeros(Int, permutations, maxni)
-    samplevec = 1:n-1
-    for i in 1:permutations
-        Cperms[i,:] = sample(rng, samplevec, maxni, replace = false)
-    end
-    
-    # Calculate Moran for all the permutations
-    Iperms = zeros(n, permutations)
-
-    Threads.@threads for i in 1:n
-        bnoi = ones(Bool, n)
-        bnoi[i] = false
-
-        zi = z[i]
-        znoi = z[bnoi]
-
-        nni = ni[i]
-        wi = weights(W, i)
-        
-        for p in 1:permutations
-            zcrand = view(znoi, Cperms[p, 1:nni])
-            Iperms[i, p] = lmoran_calc(zi, wi, zcrand)      
-        end
-    end
+    # Conditional randomizatoin
+    Iperms = crand_local(permutations, z, W, localmoran_calc, rng)
     
     larger = sum(Iperms .>= repeat(I, 1, permutations), dims = 2)
     low = (permutations .- larger) .< larger
@@ -125,3 +100,25 @@ testname(::LocalMoran) = "Local Moran";
 labelsorder(::LocalMoran) = [:ns; :HH; :LL; :LH; :HL];
 
 labelsnames(::LocalMoran) = ["Not Significant"; "High-High"; "Low-Low"; "Low-High"; "High-Low"]
+
+function labelcolor(::LocalMoran, x::String)
+
+    if x == "HH"
+        catcolor = :red
+        alpha = 1
+    elseif x == "LL"
+        catcolor = :blue
+        alpha = 1
+    elseif x == "LH"
+        catcolor = :blue
+        alpha = 0.4
+    elseif x == "HL"
+        catcolor = :red
+        alpha = 0.4 
+    elseif x == "ns"
+        catcolor = :lightgrey
+        alpha = 0.4
+    end
+
+    return (catcolor, alpha)
+end

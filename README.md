@@ -49,6 +49,7 @@ julia> using Pkg; Pkg.add("SpatialDependence")
 **Local Spatial Autocorrelation**
 
 - Local Moran.
+- Local Geary.
 - LISA Cluster Map.
 
 **Choropleth Maps**

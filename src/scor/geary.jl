@@ -51,15 +51,6 @@ function geary(x::AbstractVector{T} where T<:Real, W::SpatialWeights; permutatio
         Cperms[i] = geary_calc(view(Zi, :, i), W)
     end
 
-    #=
-        # Randomization
-    Cperms = zeros(permutations)
-    for i in 1:permutations
-        zi = shuffle(rng, z)
-        Cperms[i] = geary_calc(zi, W)
-    end
-    =#
-
     larger = sum(Cperms .>= C)
     if (permutations - larger) < larger 
         larger = permutations - larger

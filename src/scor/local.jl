@@ -1,6 +1,40 @@
 # Abstract type for Local Spatial Autocorrelation
 abstract type AbstractLocalSpatialAutocorrelation end
 
+# Function to build the conditional randomization sample and calculate the local scores
+function crand_local(permutations::Int, z::AbstractVector{T} where T<:Real, W::SpatialWeights, local_calc_function::Function, rng::AbstractRNG)::Matrix{Float64}
+    # Build conditional permutations array
+    ni = cardinalities(W)
+    n = length(ni)
+    maxni = maximum(ni)
+    Cperms = zeros(Int, permutations, maxni)
+    samplevec = 1:n-1
+    for i in 1:permutations
+        Cperms[i,:] = sample(rng, samplevec, maxni, replace = false)
+    end
+    
+    # Calculate LISA for all the permutations
+    lisaperms = zeros(n, permutations)
+
+    Threads.@threads for i in 1:n
+        bnoi = ones(Bool, n)
+        bnoi[i] = false
+
+        zi = z[i]
+        znoi = z[bnoi]
+
+        nni = ni[i]
+        wi = weights(W, i)
+        
+        for p in 1:permutations
+            zcrand = view(znoi, Cperms[p, 1:nni])
+            lisaperms[i, p] = local_calc_function(zi, wi, zcrand)      
+        end
+    end
+
+    return lisaperms
+end
+
 """
     issignificant(x, α, adjust = :none)
 Return a vector of boolean values indicating if the local statistics are significant or not at the desired threshold ``α``.
@@ -43,7 +77,7 @@ function Base.show(io::IO, x::AbstractLocalSpatialAutocorrelation)
     nl = length(labels)
     countcat = zeros(Int, nl)
     for i in 1:nl
-        issig = issignificant(x, 0.05, adjust = :fdr)
+        issig = issignificant(x, 0.05, adjust = :none)
         if labels[i] == :ns
             countcat[i] = count(.! issig)
         else
