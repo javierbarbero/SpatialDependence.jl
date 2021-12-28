@@ -10,10 +10,11 @@ See official Julia documentation on [starting Julia with multiple threats](https
 
 The following functions take advantage of multi-threading to increase their performance:
 
-| Function           | Function Name | What is parallelized?                 |
-|:-------------------|:--------------|:--------------------------------------|
-| Polygon contiguity | `polyneigh`   | Bouning box overlaps and polygon hits |
-| Global Moran's I   | `moran`       | Permutation test                      |
-| Global Geary's c   | `geary`       | Permutation test                      |
-| Local Moran        | `localmoran`  | Permutation test                      |
-| Local Geary        | `localgeary`  | Permutation test                      |
+| Function             | Function Name | What is parallelized?                 |
+|:---------------------|:--------------|:--------------------------------------|
+| Polygon contiguity   | `polyneigh`   | Bouning box overlaps and polygon hits |
+| Global Moran's I     | `moran`       | Permutation test                      |
+| Global Geary's c     | `geary`       | Permutation test                      |
+| Local Moran          | `localmoran`  | Conditional permutation test          |
+| Local Geary          | `localgeary`  | Conditional permutation test          |
+| Getis-Ord Statistics | `getisord`    | Conditional permutation test          |

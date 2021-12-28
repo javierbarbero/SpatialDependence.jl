@@ -50,6 +50,7 @@ julia> using Pkg; Pkg.add("SpatialDependence")
 
 - Local Moran.
 - Local Geary.
+- Getis-Ord Statistics.
 - LISA Cluster Map.
 
 **Choropleth Maps**

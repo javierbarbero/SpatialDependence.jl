@@ -28,7 +28,7 @@ I_i = \frac{z_i}{m_2} \sum_{j}w_{ij}z_{j}
 ```
 where $z$ is the variable of interest in deviations from the mean, and $m_2 = \sum_{i}z_i / (n - 1)$ or  $m_2 = \sum_{i}z_i / n$ is the scaling factor.
 
-Local Moran can be computed with the `localmoran` function. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproduciibility, it is possible to specify a custom random number generator with the `rng` optional parameter. If `corrected` is set to `false` the scaling factor is divided by $n$ instead of $n - 1$.
+Local Moran can be computed with the `localmoran` function. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproducibility, it is possible to specify a custom random number generator with the `rng` optional parameter. If `corrected` is set to `false` the scaling factor is divided by $n$ instead of $n - 1$.
 ```@example lscor
 lmguerry = localmoran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
 ```
@@ -55,7 +55,7 @@ c_i = \frac{1}{m_2} \sum_{j}w_{ij}(z_{i} - z_{j})^2
 ```
 where $z$ is the variable of interest in deviations from the mean, and $m_2 = \sum_{i}z_i / (n - 1)$ or  $m_2 = \sum_{i}z_i / n$ is the scaling factor.
 
-Local Geary can be computed with the `localgeary` function. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproduciibility, it is possible to specify a custom random number generator with the `rng` optional parameter. If `corrected` is set to `false` the scaling factor is divided by $n$ instead of $n - 1$.
+Local Geary can be computed with the `localgeary` function. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproducibility, it is possible to specify a custom random number generator with the `rng` optional parameter. If `corrected` is set to `false` the scaling factor is divided by $n$ instead of $n - 1$.
 ```@example lscor
 lcguerry = localgeary(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
 ```
@@ -77,9 +77,42 @@ Alternatively, observations can be interpreted together with the quadrants of th
 | Code   | Category       | Interpretation                         |
 |:-------|:---------------|:---------------------------------------|
 | `:HH`  | High-High      | High values surrounded by high values  |
-| `:LL`  | Low-Low        | Low values surrounded by low values    |
-| `:OP`  | Other Positive | Other positive spatial autocorrelation |
-| `:NE`  | Negative       | Negative spatial autocorrelation       |
+| `:LL`  | Low-Low        | Low values surrounded by low values    |
+| `:OP`  | Other Positive | Other positive spatial autocorrelation |
+| `:NE`  | Negative       | Negative spatial autocorrelation       |
+
+## Getis-Ord Statistics
+
+There are two versions of the Getis-Ord statistics (Getis and Ord, 1992; Ord and Getis, 1995) computed as:
+```math
+G_i = \frac{\sum_{j} w_{ij}x_{j}}{\sum_{j} x_{j}} \qquad \forall j \ne i
+```
+
+```math
+G_i^* = \frac{\sum_{j} w_{ij}x_{j}}{\sum_{j} x_{j}} \qquad \forall j
+```
+where $x$ is the variable of interest. The $G_i$ statistic excludes the value at the location $x_i$ in the numerator and denominator, whereas the $G_i^*$ statistic includes it. If the contiguity matrix is binary, the self weight is set to $1$, $w_{ii} = 1$, whereas if it is row-standardized, it is set to $1$ divided by the number of neighbors of $i$, including the self.
+
+Getis-Ord Statistics can be computed with the `getisord` function. The $G_i^*$ statistic is computed if `star` is set to `true`, the default, whereas the $G_i$ statistic is calculated if `star` is `false`. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproducibility, it is possible to specify a custom random number generator with the `rng` optional parameter.
+```@example lscor
+gosguerry = getisord(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
+```
+
+```@example lscor
+goguerry = getisord(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567), star = false)
+```
+
+In the Getis-Ord Statistics, observations are classified in two categories:
+
+| Code   | Category    | Interpretation                         |
+|:-------|:------------|:---------------------------------------|
+| `:H`   | High        | Cluster of high values                 |
+| `:L`   | Low         | Cluster of low values                  |
+
+The category to which heach observation is assigned can be retrieved with the `assignments` function:
+```@example lscor
+assignments(lcguerry)
+```
 
 ## Significance
 

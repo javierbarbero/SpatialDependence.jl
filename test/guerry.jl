@@ -3,6 +3,7 @@
     
     guerry = sdataset("Guerry")
     W = polyneigh(guerry)
+    Wbin = wtransform(W, :binary)
 
     # In this dataset there is no difference between Queen or Rook contiguity
     @testset "W contiguity" begin
@@ -155,12 +156,57 @@
 
         # Test :moran categories with the Donatn's variables to test the :NE label when plotting maps
         lcguerry = localgeary(guerry.Donatns, W, rng = StableRNG(1234567), permutations = 9999, categories = :moran)
+        @test SpatialDependence.labelsnames(lcguerry) == ["Not Significant"; "High-High"; "Low-Low"; "Other Positive"; "Negative"]
         @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), guerry, lcguerry)
 
         # Test dividing by n instead of (n - 1)
         lcguerry = localgeary(guerry.Litercy, W, rng = StableRNG(1234567), permutations = 0, corrected = false)
         @test score(lcguerry)[1:5] ≈ [1.205972; 0.279091; 0.444992; 0.961282; 3.171538] atol = 1e-5
         @test score(lcguerry)[81:85] ≈ [0.275484; 0.329028; 0.452205; 0.205295; 0.743059] atol = 1e-5
+    end
+
+    @testset "Getis-Ord" begin
+        goguerry = getisord(guerry.Litercy, W, rng = StableRNG(1234567), permutations = 9999, star = false)
+
+        @test score(goguerry)[1:5] ≈ [0.013602; 0.016636; 0.00684; 0.01303; 0.011971] atol = 1e-5
+        @test score(goguerry)[81:85] ≈ [0.009624; 0.007924; 0.006588; 0.020725; 0.014329] atol = 1e-5
+        @test size(scoreperms(goguerry), 1) == 85
+        @test size(scoreperms(goguerry), 2) == 9999
+        @test mean(goguerry)[1:5] ≈ [0.011893; 0.011896; 0.011901; 0.011893; 0.011923] atol = 1e-5
+        @test mean(goguerry)[81:85] ≈ [0.011901; 0.011897; 0.011896; 0.011899; 0.011896] atol = 1e-5
+        @test std(goguerry)[1:5] ≈ [0.002611; 0.002116; 0.002066; 0.002612; 0.003011] atol = 1e-5
+        @test std(goguerry)[81:85] ≈ [0.002611; 0.002087; 0.00206; 0.002095; 0.00233] atol = 1e-5
+        @test zscore(goguerry)[1:5] ≈ [0.654535; 2.240454; -2.44964; 0.435151; 0.01585] atol = 1e-5
+        @test zscore(goguerry)[81:85] ≈ [-0.872291; -1.903161; -2.576463; 4.213106; 1.044118] atol = 1e-5
+        @test pvalue(goguerry)[1:5] ≈ [0.2628; 0.0147; 0.0042; 0.3323; 0.4833] atol = 1e-4   
+        @test pvalue(goguerry)[81:85] ≈ [0.1931; 0.0224; 0.0018; 0.0001; 0.157] atol = 1e-4   
+
+        @test assignments(goguerry)[1:5] == [:H, :H, :L, :H, :H]
+        @test assignments(goguerry)[81:85] == [:L, :L, :L, :H, :H]
+        @test count(issignificant(goguerry, 0.05, adjust = :none)) == 38
+        @test count(issignificant(goguerry, 0.01, adjust = :none)) == 21
+        @test count(issignificant(goguerry, 0.05, adjust = :bonferroni)) == 6
+        @test count(issignificant(goguerry, 0.05, adjust = :fdr)) == 23
+
+        @test SpatialDependence.testname(goguerry) == "Getis-Ord Gi"
+        @test_nowarn show(IOBuffer(), goguerry)
+
+        # Test LISA Cluster Map
+        @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), guerry, goguerry)
+
+        # Getis-Ord Gi*
+        goguerry = getisord(guerry.Litercy, W, rng = StableRNG(1234567), permutations = 9999, star = true)
+
+        @test score(goguerry)[1:5] ≈ [0.012985; 0.016231; 0.006398; 0.013045; 0.013977] atol = 1e-5
+        @test score(goguerry)[81:85] ≈ [0.009318; 0.007815; 0.006183; 0.020095; 0.014127] atol = 1e-5
+
+        @test SpatialDependence.testname(goguerry) == "Getis-Ord Gi*"
+
+        # Getis-Ord Gi* with binary weights
+        goguerry = getisord(guerry.Litercy, Wbin, rng = StableRNG(1234567), permutations = 9999, star = true)
+
+        @test score(goguerry)[1:5] ≈ [0.064923; 0.113616; 0.044785; 0.065224; 0.055906] atol = 1e-5
+        @test score(goguerry)[81:85] ≈ [0.046589; 0.054704; 0.043282; 0.140667; 0.084761] atol = 1e-5
     end
 
 end

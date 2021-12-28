@@ -56,6 +56,8 @@ module SpatialDependence
         localmoran,
         LocalGeary,
         localgeary,
+        GetisOrd,
+        getisord,
         issignificant,
         
         # Re-export from Statistics
@@ -111,6 +113,7 @@ module SpatialDependence
     include("scor/local.jl")
     include("scor/localmoran.jl")
     include("scor/localgeary.jl")
+    include("scor/getisord.jl")
 
     include("maps/classification.jl")
     include("maps/graduated.jl")
