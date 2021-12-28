@@ -4,7 +4,7 @@
     slag(W, x)
 Calculate the spatial lag of `x` using the spatial weights `W`.
 """
-function slag(W::SpatialWeights, x::AbstractVector{T} where T<:Real)::Vector{Real}
+function slag(W::SpatialWeights, x::AbstractVector{T}) where {T <:Real}
     n = W.n
     nx = length(x)
 
@@ -22,4 +22,4 @@ function slag(W::SpatialWeights, x::AbstractVector{T} where T<:Real)::Vector{Rea
 
 end
 
-Base.:*(W::SpatialWeights, x::Vector{T} where T<:Real)::Vector{Real} = slag(W, x);
+Base.:*(W::SpatialWeights, x::AbstractVector{T}) where {T <:Real} = slag(W, x);

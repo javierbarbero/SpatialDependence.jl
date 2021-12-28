@@ -20,7 +20,15 @@
     end
 
     @testset "Spatial lag" begin   
-        @test W * guerry.Litercy == slag(W, guerry.Litercy)
+        Wlitercy = W * guerry.Litercy 
+        Wlitercy2 = slag(W, guerry.Litercy)
+
+        @test Wlitercy[1:5] ≈ [44.75; 54.5; 22.666667; 42.75; 39.0] atol = 1e-5
+        @test Wlitercy[81:85] ≈ [31.75; 26.166667; 21.833333; 67.666667; 47.0] atol = 1e-5
+
+        @test Wlitercy == Wlitercy
+        @test typeof(Wlitercy) == Vector{Float64}
+        @test typeof(Wlitercy2) == Vector{Float64}
     end
 
     @testset "Moran's I" begin
