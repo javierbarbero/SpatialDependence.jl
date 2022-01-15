@@ -32,7 +32,7 @@ plot(guerry, :Litercy, NaturalBreaks(), legend = :topleft, title = "Litercy")
 ```
 
 ```@example intro
-# Build polygon contiguity matrix
+# Build polygon contiguity matrix
 W = polyneigh(guerry.geometry);
 ```
 
@@ -44,6 +44,16 @@ moran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
 ```@example intro
 # Moran Scatterplot of the Litercy variable
 plot(guerry.Litercy, W, xlabel = "Litercy")
+```
+
+```@example intro
+# Local Indicators of Spatial Association (LISA) - Local Moran
+lmguerry = localmoran(guerry.Litercy, W, permutations = 9999, rng = StableRNG(1234567))
+```
+
+```@example intro
+# LISA Cluster Map
+plot(guerry, lmguerry, sig = 0.05, adjust = :fdr)
 ```
 
 ## Documentation index

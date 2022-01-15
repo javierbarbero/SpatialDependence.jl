@@ -144,4 +144,4 @@ The threshold significance value and the adjustment can also be set when plottin
 plot(guerry, lmguerry, sig = 0.05, adjust = :fdr)
 ```
 
-If not specified, the default threshold significance  value is `0.05` and the adjust parameter is `:none`.
+If not specified, the default threshold significance  value is `0.05` and the `adjust` parameter is `:none`.
