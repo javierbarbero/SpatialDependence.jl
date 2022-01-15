@@ -170,10 +170,7 @@ end
     pthreshold = get(plotattributes, :sig, 0.05)
     adjust = get(plotattributes, :adjust, :none)
 
-    # Classify values and get labels
-    q = deepcopy(lisavar.q)
-
-    q[.! issignificant(lisavar, pthreshold, adjust = adjust)] .= :ns
+   q = assignments(lisavar, pthreshold, adjust = adjust)
 
     mc = mapclassify(Unique(labelsorder(lisavar)), q)
     labels = maplabels(mc, counts = counts)

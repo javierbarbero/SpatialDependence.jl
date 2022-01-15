@@ -112,6 +112,8 @@
         @test count(issignificant(lmguerry, 0.01, adjust = :none)) == 21
         @test count(issignificant(lmguerry, 0.05, adjust = :bonferroni)) == 6
         @test count(issignificant(lmguerry, 0.05, adjust = :fdr)) == 23
+        @test assignments(lmguerry, 0.05, adjust = :none)[1:5] == [:ns, :HH, :LL, :ns, :ns]
+        @test assignments(lmguerry, 0.05, adjust = :none)[81:85] == [:ns, :LL, :LL, :HH, :ns]
 
         @test SpatialDependence.testname(lmguerry) == "Local Moran"
         @test_nowarn show(IOBuffer(), lmguerry)
@@ -148,6 +150,8 @@
         @test count(issignificant(lcguerry, 0.01, adjust = :none)) == 29
         @test count(issignificant(lcguerry, 0.05, adjust = :bonferroni)) == 9
         @test count(issignificant(lcguerry, 0.05, adjust = :fdr)) == 40
+        @test assignments(lcguerry, 0.05, adjust = :none)[1:5] == [:ns, :P, :P, :ns, :ns]
+        @test assignments(lcguerry, 0.05, adjust = :none)[81:85] == [:ns, :P, :P, :P, :ns]
 
         @test SpatialDependence.testname(lcguerry) == "Local Geary"
         @test_nowarn show(IOBuffer(), lcguerry)
@@ -195,6 +199,8 @@
         @test count(issignificant(goguerry, 0.01, adjust = :none)) == 21
         @test count(issignificant(goguerry, 0.05, adjust = :bonferroni)) == 6
         @test count(issignificant(goguerry, 0.05, adjust = :fdr)) == 23
+        @test assignments(goguerry, 0.05, adjust = :none)[1:5] == [:ns, :H, :L, :ns, :ns]
+        @test assignments(goguerry, 0.05, adjust = :none)[81:85] == [:ns, :L, :L, :H, :ns]
 
         @test SpatialDependence.testname(goguerry) == "Getis-Ord Gi"
         @test_nowarn show(IOBuffer(), goguerry)

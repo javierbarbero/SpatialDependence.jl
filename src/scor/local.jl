@@ -61,6 +61,21 @@ function issignificant(x::AbstractLocalSpatialAutocorrelation, α::Float64; adju
     end
 end
 
+"""
+    assignments(x, α, adjust = :none)
+Return a vector with the categories assigned by the local statistic with a significance threshold ``α``.
+
+p-values can be adjusted with the `adjust` parameter using the Bonferroni correction `:bonferroni` or controlling for the False Discovery Rate, `:fdr`
+"""
+function assignments(x::AbstractLocalSpatialAutocorrelation, α::Float64; adjust::Symbol = :none)::Vector{Symbol}
+    q = deepcopy(assignments(x))
+    p = pvalue(x)
+    
+    q[.! issignificant(x, α, adjust = adjust)] .= :ns
+
+    return q
+end
+
 function Base.show(io::IO, x::AbstractLocalSpatialAutocorrelation)
 
     println(io, testname(x) * " test of Spatial Autocorrelation")

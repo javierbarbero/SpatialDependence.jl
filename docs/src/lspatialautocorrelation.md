@@ -67,7 +67,7 @@ In the Local Geary, observations are classified in two categories:
 | `:P`   | Positive    | Positive spatial autocorrelation       |
 | `:N`   | Negative    | Negative spatial autocorrelation       |
 
-The category to which heach observation is assigned can be retrieved with the `assignments` function:
+The category to which each observation is assigned can be retrieved with the `assignments` function:
 ```@example lscor
 assignments(lcguerry)
 ```
@@ -109,9 +109,9 @@ In the Getis-Ord Statistics, observations are classified in two categories:
 | `:H`   | High        | Cluster of high values                 |
 | `:L`   | Low         | Cluster of low values                  |
 
-The category to which heach observation is assigned can be retrieved with the `assignments` function:
+The category to which each observation is assigned can be retrieved with the `assignments` function:
 ```@example lscor
-assignments(lcguerry)
+assignments(goguerry)
 ```
 
 ## Significance
@@ -127,6 +127,11 @@ As multiple tests are performed on the same dataset, the p-values suffer from th
 issignificant(lmguerry, 0.05, adjust = :fdr)
 ```
 
+For convenience, it is possible to get the category to which each observation is assigned while identifying which ones are not significant. This is done by specifiying a specifying threshold level and an adjustment method in the `assignments` function. Nonsignificant observations are labeled as `:ns`.
+```@example lscor
+assignments(lmguerry, 0.05, adjust = :none)
+```
+
 ## LISA Cluster Map
 
 A cluster map with the significant locations can be plotted with the `plot` function if the [Plots.jl](http://docs.juliaplots.org) package is loaded:
@@ -138,3 +143,5 @@ The threshold significance value and the adjustment can also be set when plottin
 ```@example lscor
 plot(guerry, lmguerry, sig = 0.05, adjust = :fdr)
 ```
+
+If not specified, the default threshold significance  value is `0.05` and the adjust parameter is `:none`.
