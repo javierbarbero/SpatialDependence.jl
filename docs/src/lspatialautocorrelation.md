@@ -39,8 +39,8 @@ In the Local Moran, observations are classified in four categories, depending on
 |:-------|:------------|:--------------------|:---------------------------------------|
 | `:HH`  | High-High   | Cluster: hot spot   | High values surrounded by high values  |
 | `:LL`  | Low-Low     | Cluster: cold spot  | Low values surrounded by low values    |
-| `:LH`  | Low-High    | Outlier: doughnut   | High values surrounded by low values   |
-| `:HL`  | High-Low    | Outlier: diamond    | Low values surrounded by high values   |
+| `:LH`  | Low-High    | Outlier: doughnut   | Low values surrounded by high values   |
+| `:HL`  | High-Low    | Outlier: diamond    | High values surrounded by low values   |
 
 The category to which each observation is assigned can be retrieved with the `assignments` function:
 ```@example lscor
