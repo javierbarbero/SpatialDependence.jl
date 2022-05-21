@@ -81,31 +81,38 @@ function Base.show(io::IO, x::AbstractLocalSpatialAutocorrelation)
     println(io, testname(x) * " test of Spatial Autocorrelation")
     println(io, "--------------------------------------------")
     println(io, "")
-    println(io, "Randomization test with ", size(scoreperms(x), 2), " permutations.")
-    println(io, "Interesting locations at 0.05 significance level:")
 
-    # Display clusters
-    q = assignments(x)
-    p = pvalue(x)
+    permutations = size(scoreperms(x), 2)
+    println(io, "Randomization test with ", permutations, " permutations.")
 
-    labels = labelsorder(x)
-    nl = length(labels)
-    countcat = zeros(Int, nl)
-    for i in 1:nl
-        issig = issignificant(x, 0.05, adjust = :none)
-        if labels[i] == :ns
-            countcat[i] = count(.! issig)
-        else
-            countcat[i] = count(issig .& (q .== labels[i]))
+    if permutations > 0       
+        # Display interesting locations
+        println(io, "Interesting locations at 0.05 significance level:")
+
+        q = assignments(x)
+        p = pvalue(x)
+
+        labels = labelsorder(x)
+        nl = length(labels)
+        countcat = zeros(Int, nl)
+        for i in 1:nl
+            issig = issignificant(x, 0.05, adjust = :none)
+            if labels[i] == :ns
+                countcat[i] = count(.! issig)
+            else
+                countcat[i] = count(issig .& (q .== labels[i]))
+            end
         end
-    end
 
-    labelsstr = labelsnames(x)
-    labelmaxlength = maximum(length.(labelsstr))
-    for i in 1:nl
-        if labels[i] != :ns
-            println(io, " ", lpad(labelsstr[i], labelmaxlength), ": ", countcat[i])
+        labelsstr = labelsnames(x)
+        labelmaxlength = maximum(length.(labelsstr))
+        for i in 1:nl
+            if labels[i] != :ns
+                println(io, " ", lpad(labelsstr[i], labelmaxlength), ": ", countcat[i])
+            end
         end
+    else
+        println(io, "Interesting locations cannot be identified with 0 permutations.")
     end
 
 end

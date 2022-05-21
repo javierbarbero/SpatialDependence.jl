@@ -47,6 +47,10 @@
 
         # Test Moran's I distribution
         @test_nowarn RecipesBase.apply_recipe(Dict{Symbol, Any}(), mguerry)
+
+        # Test show with 0 permutations
+        mguerry = moran(guerry.Litercy, W, rng = StableRNG(1234567), permutations = 0)
+        @test_nowarn show(IOBuffer(), mguerry)
     end
 
     @testset "Geary's c" begin
@@ -126,6 +130,9 @@
         lmguerry = localmoran(guerry.Litercy, W, rng = StableRNG(1234567), permutations = 0, corrected = false)
         @test score(lmguerry)[1:5] ≈ [-0.039981; 0.606357; 1.433727; 0.082403; -0.014033] atol = 1e-5
         @test score(lmguerry)[81:85] ≈ [0.274141; 0.610809; 1.506250; 2.170780; 0.205610] atol = 1e-5
+
+        # Test show with 0 permutations
+        @test_nowarn show(IOBuffer(), lmguerry)
     end
 
     @testset "Local Geary" begin
