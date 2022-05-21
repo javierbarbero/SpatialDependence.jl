@@ -1,7 +1,7 @@
 name = "SpatialDependence"
 uuid = "011225bf-f2c3-4261-bf98-e88701b28bbe"
 authors = ["Javier Barbero and contributors"]
-version = "0.3.0"
+version = "0.3.1"
 
 [deps]
 GeoInterface = "cf35fbd7-0cd7-5166-be24-54bfbe79505f"
