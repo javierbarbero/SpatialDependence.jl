@@ -36,9 +36,11 @@ end
     knearneigh(P; k)
 Build a spatial weights object from a vector of points using ``k`` nearest neighbors.
 """
-function knearneigh(P::Vector{T} where T<:Union{Missing,AbstractPoint}; k::Int)::SpatialWeights
+function knearneigh(P::Vector; k::Int)::SpatialWeights
+    all(GI.isgeometry.(P)) || throw(ArgumentError("Unknown geometry"))
+    all(isa.(GI.geomtrait.(P), GI.PointTrait)) || throw(ArgumentError("Geometry must be PointTrait"))
 
-    cpoints = reduce(hcat, map(a -> coordinates(a), P))
+    cpoints = reduce(hcat, map(a -> GI.coordinates(a), P))
 
     knearneigh(cpoints[1,:], cpoints[2,:]; k)
 end
@@ -48,7 +50,7 @@ end
 Build a spatial weights object from a table A that constains a points geometry column using ``k`` nearest neighbors..
 """
 function knearneigh(A::Any; k::Int)::SpatialWeights
-    istable(A) || throw(ArgumentError("Unknown geometry or not points geometry"))
+    istable(A) || throw(ArgumentError("Argument must be a table with geometry or a vector of points"))
 
     (:geometry in propertynames(A)) || throw(ArgumentError("table does not have :geometry information"))
 

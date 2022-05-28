@@ -6,7 +6,6 @@ module SpatialDependence
     [SpatialDependence repository](https://github.com/javierbarbero/SpatialDependence.jl).
     """    
 
-    using GeoInterface: AbstractGeometry, AbstractPoint, AbstractPolygon, AbstractMultiPolygon, Point, Polygon, MultiPolygon, coordinates, geotype, shapecoords
     using NearestNeighbors: KDTree, knn, inrange
     using PlotUtils: palette
     using Random: shuffle, AbstractRNG, default_rng
@@ -17,7 +16,11 @@ module SpatialDependence
     import SparseArrays: SparseMatrixCSC, sparse
     import StatsBase: counts, levels, maximum, median, minimum, nobs, percentile, sample, score, standardize, weights, zscore, ZScoreTransform
     import Statistics: mean, median, std, quantile
-    
+
+    import GeoInterface
+    const GI = GeoInterface
+    import GeoInterfaceRecipes
+
     export 
         # Types
         SpatialWeights,

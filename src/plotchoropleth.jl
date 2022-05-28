@@ -1,8 +1,8 @@
 # Plot  recipes for choropleth maps
 
 # Map shape coordinates for Plots
-function mapshapecoords(P::Vector{<:Union{Missing,AbstractPolygon,AbstractMultiPolygon}})::Tuple{Vector{Float64}, Vector{Float64}}
-    scoords = shapecoords.(P)
+function mapshapecoords(gtype::Union{GI.PolygonTrait, GI.MultiPolygonTrait},P)::Tuple{Vector{Float64}, Vector{Float64}}
+    scoords = broadcast(GeoInterfaceRecipes._coordvecs, Ref(gtype), P)
 
     x = map(a -> a[1], scoords)            
     y = map(a -> a[2], scoords)
@@ -13,8 +13,8 @@ function mapshapecoords(P::Vector{<:Union{Missing,AbstractPolygon,AbstractMultiP
     x, y
 end
 
-function mapshapecoords(P::Vector{<:Union{Missing,AbstractPoint}})::Tuple{Vector{Float64}, Vector{Float64}}
-    scoords = shapecoords.(P)
+function mapshapecoords(::GI.PointTrait, P)::Tuple{Vector{Float64}, Vector{Float64}}
+    scoords = broadcast(GeoInterfaceRecipes._coordvecs, Ref(GI.PointTrait()), P)
 
     x = map(a -> a[1][1], scoords)
     y = map(a -> a[1][2], scoords)
@@ -45,7 +45,7 @@ end
     end
 
     # Check is geometry
-    isa(P, Vector{<:Union{Missing, AbstractGeometry}}) || throw(ArgumentError("invalid geometry"))
+    all(GI.isgeometry.(P)) || throw(ArgumentError("Unknown geometry"))
 
     isCoLocation = false
     if isa(mcr, AbstractCoLocationMapClassificator)
@@ -54,7 +54,7 @@ end
         length(P) == length(cvar) || throw(ArgumentError("dimensions must match: A has ($(length(P))), colorvar has ($(length(cvar)))"))
     end
 
-    gtype = geotype(P[1])
+    gtype = GI.geomtrait(P[1])
 
     # Default color palette
     defpalette, defrev = defaultpalette(mcr)
@@ -128,16 +128,16 @@ end
         end
 
         # Get shape map coordinates and plot polygon or point
-        x, y = mapshapecoords(P[group .== i])
+        x, y = mapshapecoords(gtype, P[group .== i])
 
-        if gtype == :Polygon || gtype == :MultiPolygon
+        if isa(gtype, GI.PolygonTrait) || isa(gtype, GI.MultiPolygonTrait)
             @series begin
                 seriestype := :shape
                 seriescolor := catcolor
                 label := labels[i]
                 (x, y)
             end
-        elseif gtype == :Point
+        elseif isa(gtype, GI.PointTrait)
             @series begin
                 seriestype := :scatter
                 seriescolor := catcolor
@@ -161,9 +161,9 @@ end
     end
 
     # Check is geometry
-    isa(P, Vector{<:Union{Missing, AbstractGeometry}}) || throw(ArgumentError("invalid geometry"))
+    all(GI.isgeometry.(P)) || throw(ArgumentError("Unknown geometry"))
 
-    gtype = geotype(P[1])
+    gtype = GI.geomtrait(P[1])
 
     # Get plot attributes
     counts = get(plotattributes, :counts, true)
@@ -212,9 +212,9 @@ end
         end
 
         # Get shape map coordinates and plot polygon or point
-        x, y = mapshapecoords(P[group .== i])
+        x, y = mapshapecoords(gtype, P[group .== i])
 
-        if gtype == :Polygon || gtype == :MultiPolygon
+        if isa(gtype, GI.PolygonTrait) || isa(gtype, GI.MultiPolygonTrait)
             @series begin
                 seriestype := :shape
                 seriescolor := catcolor
@@ -222,7 +222,7 @@ end
                 label := labels[i]                
                 (x, y)
             end
-        elseif gtype == :Point
+        elseif isa(gtype, GI.PointTrait)
             @series begin
                 seriestype := :scatter
                 seriescolor := catcolor

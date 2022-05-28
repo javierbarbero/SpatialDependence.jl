@@ -35,8 +35,11 @@ end
     dnearneigh(P; threshold)
 Build a spatial weights object from a vector of points using a distance `threshold`.
 """
-function dnearneigh(P::Vector{T} where T<:Union{Missing,AbstractPoint}; threshold::Real)::SpatialWeights
-    cpoints = reduce(hcat, map(a -> coordinates(a), P))
+function dnearneigh(P::Vector; threshold::Real)::SpatialWeights
+    all(GI.isgeometry.(P)) || throw(ArgumentError("Unknown geometry"))
+    all(isa.(GI.geomtrait.(P), GI.PointTrait)) || throw(ArgumentError("Geometry must be PointTrait"))
+
+    cpoints = reduce(hcat, map(a -> GI.coordinates(a), P))
 
     dnearneigh(cpoints[1,:], cpoints[2,:]; threshold)
 end
@@ -46,7 +49,7 @@ end
 Build a spatial weights object from a table A that constains a points geometry column using a distance `threshold`.
 """
 function dnearneigh(A::Any; threshold::Real)::SpatialWeights
-    istable(A) || throw(ArgumentError("Unknown geometry or not points geometry"))
+    istable(A) || throw(ArgumentError("Argument must be a table with geometry or a vector of points"))
 
     (:geometry in propertynames(A)) || throw(ArgumentError("table does not have :geometry information"))
 

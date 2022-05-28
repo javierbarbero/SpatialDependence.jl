@@ -2,10 +2,10 @@
 @testset "Spatial Weights" begin
 
     # Create 3x3 polygons
-    polygons = Polygon[]
+    polygons = SpatialDependence.LatticePolygon[]
     for i in 1:3
         for j in 1:3
-            push!(polygons, Polygon([[[0.0 + i, 0.0 + j], [1.0 + i, 0.0 + j], [1.0 + i, 1.0 + j], [0.0 + i, 1.0 + j]]]) )
+            push!(polygons, SpatialDependence.LatticePolygon([[0.0 + i, 0.0 + j], [1.0 + i, 0.0 + j], [1.0 + i, 1.0 + j], [0.0 + i, 1.0 + j]]) )
         end
     end
 
@@ -148,14 +148,15 @@
 
     # Test Multipolygon with multipolygon 1 at the left and at the right
     @testset "Multipolygon" begin
-        mpolygons = MultiPolygon[]
+        mpolygons = SpatialDependence.LatticeMultiPolygon[]
         push!(mpolygons,       
-            MultiPolygon([[[[1.0, 0.0], [2.0, 0.0], [2.0, 1.0], [1.0, 1.0]]], 
-                        [[[5.0, 0.0], [6.0, 0.0], [6.0, 1.0], [5.0, 1.0]]]])
+            SpatialDependence.LatticeMultiPolygon([
+                    SpatialDependence.LatticePolygon([[1.0, 0.0], [2.0, 0.0], [2.0, 1.0], [1.0, 1.0]]),
+                    SpatialDependence.LatticePolygon([[5.0, 0.0], [6.0, 0.0], [6.0, 1.0], [5.0, 1.0]])])
             )
 
         for i in 2:4
-            push!(mpolygons, MultiPolygon(Polygon([[[0.0 + i, 0.0], [1.0 + i, 0.0 ], [1.0 + i, 1.0], [0.0 + i, 1.0]]])) )
+            push!(mpolygons, SpatialDependence.LatticeMultiPolygon(SpatialDependence.LatticePolygon([[0.0 + i, 0.0], [1.0 + i, 0.0 ], [1.0 + i, 1.0], [0.0 + i, 1.0]])) )
         end
 
         W = polyneigh(mpolygons) 
@@ -168,10 +169,10 @@
 
     # Test tolerance for edge detection
     @testset "Polygon tolerance" begin
-        polygonstol = Polygon[]
-        push!(polygonstol, Polygon([[[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]]]) )
-        push!(polygonstol, Polygon([[[1.0 + 0.25, 0.0], [2.0 + 0.25, 0.0], [2.0 + 0.25, 1.0], [1.0 + 0.25, 1.0]]]) )
-        push!(polygonstol, Polygon([[[2.0 + 0.50, 0.0], [3.0 + 0.50, 0.0], [3.0 + 0.50, 1.0], [2.0 + 0.50, 1.0]]]) )
+        polygonstol = SpatialDependence.SpatialDependence.LatticePolygon[]
+        push!(polygonstol, SpatialDependence.LatticePolygon([[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]]) )
+        push!(polygonstol, SpatialDependence.LatticePolygon([[1.0 + 0.25, 0.0], [2.0 + 0.25, 0.0], [2.0 + 0.25, 1.0], [1.0 + 0.25, 1.0]]) )
+        push!(polygonstol, SpatialDependence.LatticePolygon([[2.0 + 0.50, 0.0], [3.0 + 0.50, 0.0], [3.0 + 0.50, 1.0], [2.0 + 0.50, 1.0]]) )
 
         W = polyneigh(polygonstol) 
 
@@ -193,10 +194,10 @@
     end
 
     # Generate points for test
-    points = Point[]
+    points = SpatialDependence.LatticePoint[]
     for i in 1:3
         for j in 1:3
-            push!(points, Point([0.0 + i, 0.0 + j]))
+            push!(points, SpatialDependence.LatticePoint([0.0 + i, 0.0 + j]))
         end
     end
     
@@ -225,11 +226,11 @@
     end
 
     @testset "Polygon Missing" begin
-        PM = Vector{Union{Missing,Polygon}}(undef, 10)
+        PM = Vector{Union{Missing,SpatialDependence.LatticePolygon}}(undef, 10)
         PM[1:9] = polygons[1:9]
         PM[10] = missing
 
-        @test typeof(PM) == Vector{Union{Missing,Polygon}}
+        @test typeof(PM) == Vector{Union{Missing,SpatialDependence.LatticePolygon}}
         @test_throws ArgumentError polyneigh(PM) # Missin geometry error
     end
 
@@ -346,10 +347,10 @@
         regleftdown = reggeomlattice(3, 3, direction = :leftdown)
         regleftup = reggeomlattice(3, 3, direction = :leftup)
 
-        @test coordinates(regrightup[1])   == [[[[1.0, 1.0], [2.0, 1.0], [2.0, 2.0], [1.0, 2.0]]]]
-        @test coordinates(regrightdown[1]) == [[[[1.0, 3.0], [2.0, 3.0], [2.0, 4.0], [1.0, 4.0]]]]
-        @test coordinates(regleftdown[1])  == [[[[3.0, 3.0], [4.0, 3.0], [4.0, 4.0], [3.0, 4.0]]]]
-        @test coordinates(regleftup[1])    == [[[[3.0, 1.0], [4.0, 1.0], [4.0, 2.0], [3.0, 2.0]]]]
+        @test GeoInterface.coordinates(regrightup[1])   == [[[[1.0, 1.0], [2.0, 1.0], [2.0, 2.0], [1.0, 2.0]]]]
+        @test GeoInterface.coordinates(regrightdown[1]) == [[[[1.0, 3.0], [2.0, 3.0], [2.0, 4.0], [1.0, 4.0]]]]
+        @test GeoInterface.coordinates(regleftdown[1])  == [[[[3.0, 3.0], [4.0, 3.0], [4.0, 4.0], [3.0, 4.0]]]]
+        @test GeoInterface.coordinates(regleftup[1])    == [[[[3.0, 1.0], [4.0, 1.0], [4.0, 2.0], [3.0, 2.0]]]]
 
         WRook = polyneigh(regrightup, criterion = :Rook)
         @test minimum(WRook) == 2
