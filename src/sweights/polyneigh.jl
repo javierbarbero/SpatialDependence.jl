@@ -77,7 +77,6 @@ Build a spatial weights object from a vector of polygons `P`.
 function polyneigh(P::Vector; criterion::Symbol = :Queen, tol::Float64 = 0.0)::SpatialWeights
     all(GI.isgeometry.(P)) || throw(ArgumentError("Unknown geometry"))
     gtrait = GI.geomtrait.(P)
-    all(isa.(gtrait, GI.PolygonTrait) .|| isa.(gtrait, GI.MultiPolygonTrait) ) || throw(ArgumentError("Geometry must be PolygonTrait or MultiPolygonTrait"))
 
     n = length(P)
 
