@@ -1,8 +1,8 @@
 # This file contains functions for creating spatial weights from polygon data
 
 # Auxiliar function to return the points from a vector of polygons, multipolygon, or a mix of the two
-function _getpointsPoligon(P::T where T <:AbstractPolygon)::Tuple{Vector{Float64}, Vector{Float64}}
-    c = coordinates(P)
+function _getpointsPoligon(::GI.PolygonTrait, P)::Tuple{Vector{Float64}, Vector{Float64}}
+    c = GI.coordinates(P)
 
     ppointsx =  Array{Float64}(undef, length(c[1]))
     ppointsy =  Array{Float64}(undef, length(c[1]))
@@ -13,8 +13,8 @@ function _getpointsPoligon(P::T where T <:AbstractPolygon)::Tuple{Vector{Float64
     return ppointsx, ppointsy
 end
 
-function _getpointsPoligon(P::T where T <:AbstractMultiPolygon)::Tuple{Vector{Float64}, Vector{Float64}}
-    c = coordinates(P)
+function _getpointsPoligon(::GI.MultiPolygonTrait, P)::Tuple{Vector{Float64}, Vector{Float64}}
+    c = GI.coordinates(P)
 
     ppointsx =  Array{Float64}(undef, length(c[1]))
     ppointsy =  Array{Float64}(undef, length(c[1]))
@@ -34,7 +34,7 @@ function _getpointsPoligon(P::T where T <:AbstractMultiPolygon)::Tuple{Vector{Fl
     return ppointsx, ppointsy
 end
 
-_getpointsPoligon(::Missing) = throw(ArgumentError("Missing geometry"));
+_getpointsPoligon(::Any, P) = throw(ArgumentError("Missing geometry or not PolygonTrait or MultiPolygonTrait"));
 
 # Auxiliar function to return the number of times the points of two polygons hits
 function _hits(icoords::Vector{Vector{Float64}}, jcoords::Vector{Vector{Float64}}, critthr::Int64, tol::Float64)::Bool
@@ -74,10 +74,13 @@ Build a spatial weights object from a vector of polygons `P`.
 - `criterion=:Queen`: neighbour criterion. `:Queen` or `:Rook`.
 - `tol=0.0`: tolerance for polygon contiguity.
 """
-function polyneigh(P::Vector{T} where T <:Union{Missing,AbstractPolygon,AbstractMultiPolygon}; criterion::Symbol = :Queen, tol::Float64 = 0.0)::SpatialWeights
+function polyneigh(P::Vector; criterion::Symbol = :Queen, tol::Float64 = 0.0)::SpatialWeights
+    all(GI.isgeometry.(P)) || throw(ArgumentError("Unknown geometry"))
+    gtrait = GI.geomtrait.(P)
+
     n = length(P)
 
-    xy = _getpointsPoligon.(P)
+    xy = _getpointsPoligon.(gtrait, P)
 
     x = map(a -> a[1], xy)
     y = map(a -> a[2], xy)
@@ -153,9 +156,9 @@ Build a spatial weights object from table A that contains a geometry column.
 - `criterion=:Queen`: neighbour criterion. `:Queen` or `:Rook`.
 - `tol=0.0`: tolerance for polygon contiguity.
 """
-function polyneigh(A::Any; criterion::Symbol = :Queen, tol::Float64 = 0.0)::SpatialWeights
-    
-    istable(A) || throw(ArgumentError("Unknown geometry or not polygon geometry"))
+function polyneigh(A::Any; criterion::Symbol = :Queen, tol::Float64 = 0.0)::SpatialWeights    
+
+    istable(A) || throw(ArgumentError("Argument must be a table with geometry or a vector of polygons"))
 
     (:geometry in propertynames(A)) || throw(ArgumentError("table does not have :geometry information"))
 

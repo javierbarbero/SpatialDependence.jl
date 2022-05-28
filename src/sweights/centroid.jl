@@ -6,8 +6,8 @@ Calculate the mean center of a polygon or vector of polygons ``P``.
 """
 function meancenter end
 
-function meancenter(P::Union{AbstractPolygon,AbstractMultiPolygon})::Tuple{Float64, Float64}
-    xy = _getpointsPoligon(P)
+function meancenter(P)::Tuple{Float64, Float64}
+    xy = _getpointsPoligon(GI.geomtrait(P), P)
 
     cx = mean(xy[1])
     cy = mean(xy[2])
@@ -15,7 +15,7 @@ function meancenter(P::Union{AbstractPolygon,AbstractMultiPolygon})::Tuple{Float
     return cx, cy
 end
 
-function meancenter(P::Vector{T} where T <:Union{Missing,AbstractPolygon,AbstractMultiPolygon})::Tuple{Vector{Float64}, Vector{Float64}}
+function meancenter(P::Vector)::Tuple{Vector{Float64}, Vector{Float64}}
     cxy = meancenter.(P)
 
     cx = first.(cxy)
@@ -30,8 +30,8 @@ Calculate the centroid of a polygon or vector of polygons ``P``.
 """
 function centroid end
 
-function centroid(P::Union{AbstractPolygon,AbstractMultiPolygon})::Tuple{Float64, Float64}
-    xy = _getpointsPoligon(P)
+function centroid(P)::Tuple{Float64, Float64}
+    xy = _getpointsPoligon(GI.geomtrait(P), P)
 
     xo = xy[1]
     yo = xy[2]
@@ -74,7 +74,7 @@ function centroid(P::Union{AbstractPolygon,AbstractMultiPolygon})::Tuple{Float64
     return cx, cy
 end
 
-function centroid(P::Vector{T} where T <:Union{Missing,AbstractPolygon,AbstractMultiPolygon})::Tuple{Vector{Float64}, Vector{Float64}}
+function centroid(P::Vector)::Tuple{Vector{Float64}, Vector{Float64}}
     cxy = centroid.(P)
 
     cx = first.(cxy)

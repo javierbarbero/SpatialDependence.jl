@@ -5,6 +5,7 @@ version = "0.3.1"
 
 [deps]
 GeoInterface = "cf35fbd7-0cd7-5166-be24-54bfbe79505f"
+GeoInterfaceRecipes = "0329782f-3d07-4b52-b9f6-d3137cf03c7a"
 NearestNeighbors = "b8a86587-4115-5ab1-83bc-aa920d37bbce"
 PlotUtils = "995b91a9-d308-5afd-9ec6-746e21dbc043"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
@@ -15,7 +16,8 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
 
 [compat]
-GeoInterface = "0.5"
+GeoInterface = "1"
+GeoInterfaceRecipes = "1"
 NearestNeighbors = "0.4"
 PlotUtils = "1"
 RecipesBase = "1"
