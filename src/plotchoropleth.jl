@@ -27,8 +27,7 @@ end
 
     if istable(A)
         # If Table or DataFrame
-        (:geometry in propertynames(A)) || throw(ArgumentError("table does not have :geometry information"))
-        P = A.geometry
+        P = _geomFromTable(A)
 
         if isa(colorvar, Symbol) 
             cvar = A[!, colorvar]
@@ -154,8 +153,7 @@ end
 
     if istable(A)
         # If Table or DataFrame
-        (:geometry in propertynames(A)) || throw(ArgumentError("table does not have :geometry information"))
-        P = A.geometry
+        P = _geomFromTable(A)
     else
         P = A
     end

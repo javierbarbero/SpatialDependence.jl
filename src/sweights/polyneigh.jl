@@ -160,7 +160,17 @@ function polyneigh(A::Any; criterion::Symbol = :Queen, tol::Float64 = 0.0)::Spat
 
     istable(A) || throw(ArgumentError("Argument must be a table with geometry or a vector of polygons"))
 
-    (:geometry in propertynames(A)) || throw(ArgumentError("table does not have :geometry information"))
+    geomcol = _geomFromTable(A)
 
-    return polyneigh(A.geometry, criterion = criterion, tol = tol)
+    return polyneigh(geomcol, criterion = criterion, tol = tol)
+end
+
+function _geomFromTable(A::Any)
+    if :geometry in propertynames(A)
+        geomcol = A.geometry
+    else
+        (:geom in propertynames(A)) || throw(ArgumentError("table does not have :geometry or :geom information"))
+        geomcol = A.geom
+    end
+    return geomcol
 end

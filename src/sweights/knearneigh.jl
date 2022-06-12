@@ -52,7 +52,7 @@ Build a spatial weights object from a table A that constains a points geometry c
 function knearneigh(A::Any; k::Int)::SpatialWeights
     istable(A) || throw(ArgumentError("Argument must be a table with geometry or a vector of points"))
 
-    (:geometry in propertynames(A)) || throw(ArgumentError("table does not have :geometry information"))
+    geomcol = _geomFromTable(A)
 
-    knearneigh(A.geometry; k)
+    knearneigh(geomcol; k)
 end

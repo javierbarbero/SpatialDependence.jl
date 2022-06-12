@@ -6,6 +6,8 @@ CurrentModule = SpatialDependence
 
 Spatial Weight Matrices can be created from different geometries (polygons, multi polygons, or points) or raw data in Matrix format. By default, spatial weights will be row-standardized so that all rows sum to 1.
 
+The package implements [GeoInterface.jl](https://github.com/JuliaGeo/GeoInterface.jl) 1.0 traits for geospatial vector data. Therefore, any geospatial data loaded with a package that implements this feature, such as [Shapefile.jl](https://github.com/JuliaGeo/Shapefile.jl) or [GeoDataFrames.jl](https://github.com/evetion/GeoDataFrames.jl), should, in principle, be compatible with this package.
+
 ## Polygon contiguity
 
 The `polyneigh` function creates a spatial weights object that identifies as neighbors those polygons that are physically contiguous.

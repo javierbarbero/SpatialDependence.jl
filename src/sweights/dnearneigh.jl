@@ -51,7 +51,7 @@ Build a spatial weights object from a table A that constains a points geometry c
 function dnearneigh(A::Any; threshold::Real)::SpatialWeights
     istable(A) || throw(ArgumentError("Argument must be a table with geometry or a vector of points"))
 
-    (:geometry in propertynames(A)) || throw(ArgumentError("table does not have :geometry information"))
+    geomcol = _geomFromTable(A)
 
-    dnearneigh(A.geometry; threshold)
+    dnearneigh(geomcol; threshold)
 end

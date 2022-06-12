@@ -230,4 +230,12 @@
         @test score(goguerry)[81:85] ≈ [0.046589; 0.054704; 0.043282; 0.140667; 0.084761] atol = 1e-5
     end
 
+
+    # Test table with :geom column instead of :geometry
+    @testset "Table with :geom" begin
+        guerrygeom = guerry[:,2:end]
+        guerrygeom.geom = guerry.geometry
+        @test_nowarn polyneigh(guerrygeom)
+    end
+
 end
