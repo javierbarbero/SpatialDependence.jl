@@ -14,7 +14,8 @@ module SpatialDependence
 
     import Base: length
     import SparseArrays: SparseMatrixCSC, sparse
-    import StatsBase: counts, levels, maximum, median, minimum, nobs, percentile, sample, score, standardize, weights, zscore, ZScoreTransform
+    import StatsAPI: pvalue, nobs
+    import StatsBase: counts, levels, maximum, median, minimum, percentile, sample, score, standardize, weights, zscore, ZScoreTransform
     import Statistics: mean, median, std, quantile
 
     import GeoInterface
