@@ -10,7 +10,7 @@ module SpatialDependence
     using PlotUtils: palette
     using Random: shuffle, AbstractRNG, default_rng
     using RecipesBase
-    using Tables: istable
+    using Tables: istable, getcolumn
 
     import Base: length
     import SparseArrays: SparseMatrixCSC, sparse
