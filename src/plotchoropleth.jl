@@ -2,7 +2,9 @@
 
 # Map shape coordinates for Plots
 function mapshapecoords(gtype::Union{GI.PolygonTrait, GI.MultiPolygonTrait},P)::Tuple{Vector{Float64}, Vector{Float64}}
-    scoords = broadcast(GeoInterfaceRecipes._coordvecs, Ref(gtype), P)
+    #scoords = broadcast(GeoInterfaceRecipes._coordvecs, Ref(gtype), P)
+    # Get always the coordinates as if MultiPolygon to avoid weird plots when geometries are polygons.
+    scoords = broadcast(GeoInterfaceRecipes._coordvecs, Base.RefValue{GeoInterface.MultiPolygonTrait}(GeoInterface.MultiPolygonTrait()), P)
 
     x = map(a -> a[1], scoords)            
     y = map(a -> a[2], scoords)
