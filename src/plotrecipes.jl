@@ -69,7 +69,7 @@ end
         Sperms
     end
 
-    # Vertical line at Moran's i
+    # Vertical line at Global Spatial Autocorrelation statistic
     @series begin
         seriestype := :vline
         seriescolor --> :red

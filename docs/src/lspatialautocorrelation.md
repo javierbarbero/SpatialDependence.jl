@@ -26,7 +26,7 @@ Local Moran (Anselin, 1995) is the most used local spatial autocorrelation stati
 ```math
 I_i = \frac{z_i}{m_2} \sum_{j}w_{ij}z_{j}
 ```
-where $z$ is the variable of interest in deviations from the mean, and $m_2 = \sum_{i}z_i / (n - 1)$ or  $m_2 = \sum_{i}z_i / n$ is the scaling factor.
+where $z$ is the variable of interest in deviations from the mean, and $m_2 = \sum_{i}z_i^{2} / (n - 1)$ or  $m_2 = \sum_{i}z_i^{2} / n$ is the scaling factor.
 
 Local Moran can be computed with the `localmoran` function. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproducibility, it is possible to specify a custom random number generator with the `rng` optional parameter. If `corrected` is set to `false` the scaling factor is divided by $n$ instead of $n - 1$.
 ```@example lscor
@@ -53,7 +53,7 @@ Local Geary (Anselin, 1995) is computed as:
 ```math
 c_i = \frac{1}{m_2} \sum_{j}w_{ij}(z_{i} - z_{j})^2
 ```
-where $z$ is the variable of interest in deviations from the mean, and $m_2 = \sum_{i}z_i / (n - 1)$ or  $m_2 = \sum_{i}z_i / n$ is the scaling factor.
+where $z$ is the variable of interest in deviations from the mean, and $m_2 = \sum_{i}z_i^{2} / (n - 1)$ or  $m_2 = \sum_{i}z_i^{2} / n$ is the scaling factor.
 
 Local Geary can be computed with the `localgeary` function. By default, $9,999$ permutations are calculated for the inference. It is possible to specify a different number of permutations with the `permutations` optional parameter. For reproducibility, it is possible to specify a custom random number generator with the `rng` optional parameter. If `corrected` is set to `false` the scaling factor is divided by $n$ instead of $n - 1$.
 ```@example lscor
