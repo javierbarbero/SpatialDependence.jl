@@ -18,7 +18,7 @@ Compute the  Moran's I test of global spatial autocorrelation.
 - `permutations=9999`: number of permutations for the randomization test.
 - `rng=default_rng()`: random number generator for the randomization test.
 """
-function moran(x::AbstractVector{T} where T<:Real, W::SpatialWeights; permutations::Int = 9999,
+function moran(x::AbstractVector{T} where T, W::SpatialWeights; permutations::Int = 9999,
     rng::AbstractRNG = default_rng())::GlobalMoran
 
     n = length(x)

@@ -20,7 +20,7 @@ Compute the Getis-Ord statistic.
 - `permutations=9999`: number of permutations for the randomization test.
 - `rng=default_rng()`: random number generator for the randomization test.
 """
-function getisord(x::AbstractVector{T} where T<:Real, W::SpatialWeights; permutations::Int = 9999,
+function getisord(x::AbstractVector{T} where T, W::SpatialWeights; permutations::Int = 9999,
     star::Bool = true, rng::AbstractRNG = default_rng())::GetisOrd
 
     wt = wtransformation(W) 

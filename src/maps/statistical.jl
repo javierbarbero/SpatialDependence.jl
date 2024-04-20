@@ -17,7 +17,7 @@ struct Percentiles <: AbstractStatisticalMapClassificator
 end
 
 # Bounds
-function mapclassifybounds(mcr::BoxPlot, x::Vector{T} where T<:Real)::Tuple{Vector{Float64}, Vector{Float64}}
+function mapclassifybounds(mcr::BoxPlot, x::Vector{T} where T)::Tuple{Vector{Float64}, Vector{Float64}}
     h = mcr.h
     q = quantile(x, [0.25, 0.5, 0.75])
     q25 = q[1]
@@ -41,7 +41,7 @@ function mapclassifybounds(mcr::BoxPlot, x::Vector{T} where T<:Real)::Tuple{Vect
     lbound, ubound
 end
 
-function mapclassifybounds(::StdMean, x::Vector{T} where T<:Real)::Tuple{Vector{Float64}, Vector{Float64}}
+function mapclassifybounds(::StdMean, x::Vector{T} where T)::Tuple{Vector{Float64}, Vector{Float64}}
     m = mean(x)
     sd = std(x, corrected = true)
 
@@ -51,7 +51,7 @@ function mapclassifybounds(::StdMean, x::Vector{T} where T<:Real)::Tuple{Vector{
     lbounds, ubounds
 end
 
-function mapclassifybounds(mcr::Percentiles, x::Vector{T} where T<:Real)::Tuple{Vector{Float64}, Vector{Float64}}
+function mapclassifybounds(mcr::Percentiles, x::Vector{T} where T)::Tuple{Vector{Float64}, Vector{Float64}}
     p = percentile(x, mcr.p)
 
     lbound = vcat(minimum(x), p) 
