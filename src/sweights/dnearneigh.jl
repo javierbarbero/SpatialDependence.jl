@@ -4,13 +4,17 @@
     dnearneigh(X, Y; threshold)
 Build a spatial weights object from a set of coordinates using a distance `threshold`.
 """
-function dnearneigh(X::Vector{Float64}, Y::Vector{Float64}; threshold::Real)::SpatialWeights
+function dnearneigh(X::Vector, Y::Vector; threshold::Real)::SpatialWeights
     n, ny = length(X), length(Y)
 
     n == ny || throw(DimensionMismatch("dimensions must match: X has length ($(n)), Y has length ($ny)"))
     
+    # Fail if missing values
+    !any(ismissing.(X)) || throw(DimensionMismatch("missing values not allowed in X coordinates"))
+    !any(ismissing.(Y)) || throw(DimensionMismatch("missing values not allowed in Y coordinates"))
+
     # Get points within range using a KDTree
-    cpoints = vcat(X', Y')
+    cpoints = vcat(collect(skipmissing(X))', collect(skipmissing(Y))')
 
     kdtree = KDTree(cpoints)    
     idxs  = inrange(kdtree, cpoints, threshold, true)

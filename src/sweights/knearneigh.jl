@@ -4,14 +4,17 @@
     knearneigh(X, Y; k)
 Build a spatial weights object from a set of coordinates using `k` nearest neighbors.
 """
-function knearneigh(X::Vector{Float64}, Y::Vector{Float64}; k::Int)::SpatialWeights
-
+function knearneigh(X::Vector, Y::Vector; k::Int)::SpatialWeights
     n, ny = length(X), length(Y)
 
     n == ny || throw(DimensionMismatch("dimensions must match: X has length ($(n)), Y has length ($ny)"))
     
+    # Fail if missing values
+    !any(ismissing.(X)) || throw(DimensionMismatch("missing values not allowed in X coordinates"))
+    !any(ismissing.(Y)) || throw(DimensionMismatch("missing values not allowed in Y coordinates"))
+
     # Get nearest neighbors using a KDTree
-    cpoints = vcat(X', Y')
+    cpoints = vcat(collect(skipmissing(X))', collect(skipmissing(Y))')
 
     kdtree = KDTree(cpoints)    
     idxs,  = knn(kdtree, cpoints, k + 1, true)

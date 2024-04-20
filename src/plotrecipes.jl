@@ -11,6 +11,8 @@ end
 # Recipe for Moran plot
 @recipe function f(x::Vector, W::SpatialWeights)
 
+    !any(ismissing.(x)) || throw(DimensionMismatch("missing values not allowed"))
+
     Wx = slag(W, x)
 
     zstandardize  = get(plotattributes, :standardize, true)
