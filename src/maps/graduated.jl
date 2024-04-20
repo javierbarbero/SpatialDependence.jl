@@ -21,7 +21,7 @@ struct CustomBreaks <: AbstractGraduatedMapClassificator
 end
 
 # Bounds
-function mapclassifybounds(mcr::EqualIntervals, x::Vector{T} where T<:Real)::Tuple{Vector{Float64}, Vector{Float64}}
+function mapclassifybounds(mcr::EqualIntervals, x::Vector{T} where T)::Tuple{Vector{Float64}, Vector{Float64}}
     k = mcr.k 
     minx = minimum(x)
     maxx = maximum(x)
@@ -38,7 +38,7 @@ function mapclassifybounds(mcr::EqualIntervals, x::Vector{T} where T<:Real)::Tup
     lbound, ubound
 end
 
-function mapclassifybounds(mcr::Quantiles, x::Vector{T} where T<:Real)::Tuple{Vector{Float64}, Vector{Float64}}
+function mapclassifybounds(mcr::Quantiles, x::Vector{T} where T)::Tuple{Vector{Float64}, Vector{Float64}}
     k = mcr.k
     qx = quantile(x, range(1/k, 1, length = k))
 
@@ -51,7 +51,7 @@ function mapclassifybounds(mcr::Quantiles, x::Vector{T} where T<:Real)::Tuple{Ve
     lbound, ubound
 end
 
-function mapclassifybounds(mcr::CustomBreaks, x::Vector{T} where T<:Real)::Tuple{Vector{Float64}, Vector{Float64}}
+function mapclassifybounds(mcr::CustomBreaks, x::Vector{T} where T)::Tuple{Vector{Float64}, Vector{Float64}}
     bins = mcr.bins
 
     lbound = vcat(minimum(x), bins) 
@@ -61,7 +61,7 @@ function mapclassifybounds(mcr::CustomBreaks, x::Vector{T} where T<:Real)::Tuple
 end
 
 
-function mapclassifybounds(mcr::NaturalBreaks, x::Vector{T} where T<:Real)::Tuple{Vector{Float64}, Vector{Float64}}
+function mapclassifybounds(mcr::NaturalBreaks, x::Vector{T} where T)::Tuple{Vector{Float64}, Vector{Float64}}
     k = mcr.k
     n = length(x)
     xs = sort(x)
@@ -146,7 +146,7 @@ struct GraduatedMapClassification <: AbstractMapClassification
     upper::Symbol
 end
 
-function mapclassify(mcr::AbstractGraduatedMapClassificator, x::Vector{T} where T<:Real; 
+function mapclassify(mcr::AbstractGraduatedMapClassificator, x::Vector{T} where T; 
     lower::Symbol = :open, upper::Symbol = :closed)::GraduatedMapClassification  
 
     ((lower == :open) || (lower == :closed )) || throw(ArgumentError("lower bound must be :open or :closed"))

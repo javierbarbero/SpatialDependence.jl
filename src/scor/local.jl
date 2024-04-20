@@ -2,7 +2,7 @@
 abstract type AbstractLocalSpatialAutocorrelation end
 
 # Function to build the conditional randomization sample and calculate the local scores
-function crand_local(permutations::Int, z::AbstractVector{T} where T<:Real, W::SpatialWeights, local_calc_function::Function, rng::AbstractRNG)::Matrix{Float64}
+function crand_local(permutations::Int, z::AbstractVector{T} where T, W::SpatialWeights, local_calc_function::Function, rng::AbstractRNG)::Matrix{Float64}
     # Build conditional permutations array
     ni = cardinalities(W)
     n = length(ni)

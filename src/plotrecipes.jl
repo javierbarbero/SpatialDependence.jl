@@ -9,13 +9,13 @@
 end
 
 # Recipe for Moran plot
-@recipe function f(x::Vector{Float64}, W::SpatialWeights)
+@recipe function f(x::Vector, W::SpatialWeights)
 
     Wx = slag(W, x)
 
     zstandardize  = get(plotattributes, :standardize, true)
     if zstandardize
-        z = standardize(ZScoreTransform, x)
+        z = standardize(ZScoreTransform, collect(skipmissing(x)))
         Wz = standardize(ZScoreTransform, Wx)
     else
         z = x

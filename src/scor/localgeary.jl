@@ -21,7 +21,7 @@ Compute the Local Geary test of spatial autocorrelation.
 - `corrected=true`: divide the scaling factor by ``n-1`` instead of ``n``.
 - `categories=:positivenegative`: assing observations to positive or negative spatial autocorrelation, or in combination with the `:moran` scatterplot.
 """
-function localgeary(x::AbstractVector{T} where T<:Real, W::SpatialWeights; permutations::Int = 9999,
+function localgeary(x::AbstractVector{T} where T, W::SpatialWeights; permutations::Int = 9999,
     corrected::Bool = true, categories::Symbol = :positivenegative,
     rng::AbstractRNG = default_rng())::LocalGeary
 

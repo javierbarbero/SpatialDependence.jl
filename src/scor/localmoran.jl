@@ -19,7 +19,7 @@ Compute the Local Moran test of spatial autocorrelation.
 - `rng=default_rng()`: random number generator for the randomization test.
 - `corrected=true`: divide the scaling factor by ``n-1`` instead of ``n``.
 """
-function localmoran(x::AbstractVector{T} where T<:Real, W::SpatialWeights; permutations::Int = 9999,
+function localmoran(x::AbstractVector{T} where T, W::SpatialWeights; permutations::Int = 9999,
     corrected::Bool = true, rng::AbstractRNG = default_rng())::LocalMoran
 
     n = length(x)
