@@ -7,9 +7,8 @@ module SpatialDependence
     """    
 
     using NearestNeighbors: KDTree, knn, inrange
-    using PlotUtils: palette
     using Random: shuffle, AbstractRNG, default_rng
-    using RecipesBase
+    #using RecipesBase
     using Tables: istable, getcolumn
 
     import Base: length
@@ -20,7 +19,6 @@ module SpatialDependence
 
     import GeoInterface
     const GI = GeoInterface
-    import GeoInterfaceRecipes
 
     export 
         # Types
@@ -124,8 +122,5 @@ module SpatialDependence
     include("maps/statistical.jl")
     include("maps/unique.jl")
     include("maps/colocation.jl")
-
-    include("plotrecipes.jl")
-    include("plotchoropleth.jl")
 
 end

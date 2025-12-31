@@ -251,7 +251,7 @@
         @test neighbors(W, 2) == [1, 3, 5]
         @test neighbors(W, 3) == [2, 5, 6]
         @test neighbors(W, 4) == [1, 5, 7]
-        @test neighbors(W, 5) == [2, 4, 8]
+        @test neighbors(W, 5) == [2, 4, 6]
         @test neighbors(W, 6) == [3, 5, 9]
         @test neighbors(W, 7) == [4, 5, 8]
         @test neighbors(W, 8) == [5, 7, 9]

@@ -1,10 +1,103 @@
-# Plot  recipes for choropleth maps
+# Plot recipes
+module SpatialDependenceRecipesBaseExt
+
+using RecipesBase
+import PlotUtils: palette
+import SpatialDependence: SpatialWeights, AbstractGlobalSpatialAutocorrelation, AbstractMapClassificator, AbstractLocalSpatialAutocorrelation, AbstractCoLocationMapClassificator, AbstractGraduatedMapClassificator, AbstractUniqueMapClassificator, cardinalities, slag, score, scoreperms, assignments, mapclassify, _geomFromTable, Unique, labelsorder, maplabels, labelcolor, defaultpalette
+import StatsBase: standardize, ZScoreTransform
+import Statistics: mean
+import Tables: istable, getcolumn
+
+import GeoInterface
+const GI = GeoInterface
+
+## Recipe for Connectivity Histogram (Cardinality Histogram)
+@recipe function f(W::SpatialWeights)
+    xguide --> "Number of Neighbors"
+    legend --> false
+    seriestype --> :histogram
+    cardinalities(W)
+end
+
+## Recipe for Moran plot
+@recipe function f(x::Vector, W::SpatialWeights)
+
+    !any(ismissing.(x)) || throw(DimensionMismatch("missing values not allowed"))
+
+    Wx = slag(W, x)
+
+    zstandardize  = get(plotattributes, :standardize, true)
+    if zstandardize
+        z = standardize(ZScoreTransform, collect(skipmissing(x)))
+        Wz = standardize(ZScoreTransform, Wx)
+    else
+        z = x
+        Wz = Wx
+    end
+
+    title --> "Moran Scatterplot"
+    xguide --> "Attribute"
+    yguide --> "Spatial Lag of " * plotattributes[:xguide]
+    legend --> false
+    grid --> false
+
+    # Variable and spatial lag of variable
+    @series begin
+        seriestype := :scatter
+        smooth := true
+        z, Wz
+    end
+
+    # Vertical line at variable mean
+    zmean = mean(z)
+    @series begin
+        seriestype := :vline
+        linestyle := :dash
+        seriescolor --> :red
+        [zmean]
+    end
+
+    # Horizontal line at W * variable mean
+    Wzmean = mean(Wz)
+    @series begin
+        seriestype := :hline
+        linestyle := :dash
+        seriescolor --> :red
+        [Wzmean]
+    end
+
+end
+
+# Recipe for Global Spatial Autocorrelation reference distribution
+@recipe function plot(x::AbstractGlobalSpatialAutocorrelation)
+
+    S = score(x)
+    Sperms = scoreperms(x)
+
+    legend --> false
+
+    # Histogram of permutated values
+    @series begin
+        seriestype := :histogram
+        Sperms
+    end
+
+    # Vertical line at Global Spatial Autocorrelation statistic
+    @series begin
+        seriestype := :vline
+        seriescolor --> :red
+        [S]
+    end
+
+end
+
+
+## Plot  recipes for choropleth maps
 
 # Map shape coordinates for Plots
 function mapshapecoords(gtype::Union{GI.PolygonTrait, GI.MultiPolygonTrait},P)::Tuple{Vector{Float64}, Vector{Float64}}
-    #scoords = broadcast(GeoInterfaceRecipes._coordvecs, Ref(gtype), P)
     # Get always the coordinates as if MultiPolygon to avoid weird plots when geometries are polygons.
-    scoords = broadcast(GeoInterfaceRecipes._coordvecs, Base.RefValue{GeoInterface.MultiPolygonTrait}(GeoInterface.MultiPolygonTrait()), P)
+    scoords = broadcast(_coordvecs, Base.RefValue{GeoInterface.MultiPolygonTrait}(GeoInterface.MultiPolygonTrait()), P)
 
     x = map(a -> a[1], scoords)            
     y = map(a -> a[2], scoords)
@@ -16,7 +109,7 @@ function mapshapecoords(gtype::Union{GI.PolygonTrait, GI.MultiPolygonTrait},P)::
 end
 
 function mapshapecoords(::GI.PointTrait, P)::Tuple{Vector{Float64}, Vector{Float64}}
-    scoords = broadcast(GeoInterfaceRecipes._coordvecs, Ref(GI.PointTrait()), P)
+    scoords = broadcast(_coordvecs, Ref(GI.PointTrait()), P)
 
     x = map(a -> a[1][1], scoords)
     y = map(a -> a[1][2], scoords)
@@ -232,5 +325,42 @@ end
             end
         end
     end
+
+end
+
+## Coordinates functions taken from GeoInterfaceRecipesBaseExt
+_coordvecs(::GI.PointTrait, geom) = [tuple(GI.coordinates(geom)...)]
+
+function _coordvecs(::GI.MultiPolygonTrait, geom)
+    function loop!(vecs, geom)
+        i1 = 1
+        for ring in GI.getring(geom)
+            i2 = i1 + GI.npoint(ring) - 1
+            range = i1:i2
+            vvecs = map(v -> view(v, range), vecs)
+            _geom2coordvecs!(vvecs..., ring)
+            map(v -> v[i2 + 1] = NaN, vecs)
+            i1 = i2 + 2
+        end
+        return vecs
+    end
+    n = GI.npoint(geom) + GI.nring(geom)
+    if GI.is3d(geom)
+        vecs = ntuple(_ -> Array{Float64}(undef, n), 3)
+        return loop!(vecs, geom)
+    else
+        vecs = ntuple(_ -> Array{Float64}(undef, n), 2)
+        return loop!(vecs, geom)
+    end
+end
+
+function _geom2coordvecs!(xs, ys, geom)
+    for (i, p) in enumerate(GI.getpoint(geom))
+        xs[i] = GI.x(p)
+        ys[i] = GI.y(p)
+    end
+    return xs, ys
+end
+## End code taken from GeoInterfaceRecipesBaseExt
 
 end
